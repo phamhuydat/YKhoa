@@ -1,0 +1,339 @@
+﻿@{
+
+    ViewBag.Title = "Nhóm học phần";
+
+}
+
+@section head {
+    <link rel="stylesheet" id="css-main" href="~/css/dashmix.css">
+    <link rel="stylesheet" id="css-main" href="~/css/custom.css">
+}
+
+@section scripts{
+    <script src="~/clientjs/client_group.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+}
+
+<div class="main-content">
+
+    <div class="page-content">
+        <div class="container-fluid">
+            <div x-data="clientGroup">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0">Nhóm học phần</h4>
+
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);"></a>Nhóm</li>
+                                    <li class="breadcrumb-item active">Danh sách</li>
+                                </ol>
+                            </div>
+
+                        </div>
+                    </div>                            
+                </div>
+                <!-- end page title -->
+                                                                                
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-sm-4">
+                                <div class="search-box">
+                                    <input type="text" class="form-control" id="searchMemberList"
+                                           placeholder="Tìm kiếm...">
+                                    <i class="ri-search-line search-icon"></i>
+                                </div>
+                            </div>
+                            <!--end col-->
+                            <div class="col-sm-auto ms-auto">
+                                <div class="list-grid-nav gap-1">
+                                    <button class="btn btn-primary addMembers-modal" data-bs-toggle="modal"
+                                            data-bs-target="#addmemberModal">
+                                        <i class="ri-add-fill me-1 align-bottom"></i> Tham gia nhóm
+                                    </button>
+                                </div>
+                            </div>
+                            <!--end col-->
+                        </div>
+                        <!--end row-->
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div>
+                            <!-- js page chính -->
+                            <div id="teamlist">
+                                <div class="team-list grid-view-filter row" id="team-member-list">
+                                    <template x-for="item in _listGroups">
+                                        <div class="col-md-6 col-xl-4">
+                                            <div class="block block-rounded h-100 mb-0">
+                                                <div class="block-header">
+                                                    <div class="flex-grow-1 text-muted fs-sm fw-semibold">
+                                                        <span x-text="item.teacherName"></span>
+                                                    </div>
+                                                    <div class="block-options">
+                                                        <div class="dropdown">
+                                                            <button type="button" class="btn btn-alt-secondary dropdown-toggle module__dropdown"
+                                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="si si-settings"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu dropdown-menu-end">
+                                                                <a class="dropdown-item btn-hide-group" href="javascript:void(0)">
+                                                                    <i class="nav-main-link-icon si si-eye me-2 text-dark"></i> 
+                                                                    Ẩn nhóm
+                                                                </a>
+
+                                                                <a class="dropdown-item btn-delete-group" href="javascript:void(0)">
+                                                                    <i class="si si-logout me-2 fa-fw icon-dropdown-item"></i>
+                                                                    Thoát nhóm
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="block-content bg-body-light text-center">
+                                                    <h3 class="fs-4 mb-3">
+                                                        <a href="javascript:void(0)" class="link-fx" x-text="item.subjectName"></a>
+                                                    </h3>
+                                                    <h5 class="text-muted mb-3" style="font-size:13px" 
+                                                        x-text=" 'NĂM HỌC ' + item.academicYear + ' - HỌC KỲ ' + item.semester">
+                                                    </h5>
+                                                    <div class="push">
+                                                        <span class="badge bg-info text-uppercase fw-bold py-2 px-3" x-text="item.groupName"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="block-content block-content-full">
+                                                    <div class="row g-sm">
+                                                        <div class="col-12">
+                                                            <button class="btn w-100 btn-alt-secondary btn-view-group" type="button" data-bs-toggle="offcanvas" data-bs-target="#member-overview"
+                                                                    aria-controls="offcanvasExample" x-on:click="LoadInfoGroup(item.id)">
+                                                                <i class="fa fa-eye me-1 opacity-50"></i> Xem nhóm
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </template>
+
+                                </div>
+                            </div>
+
+                            <template x-if="_listGroups.length == 0">
+                                <div class="py-4 mt-4 text-center" id="noresult">
+                                    <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
+                                               colors="primary:#405189,secondary:#0ab39c"
+                                               style="width:72px;height:72px"></lord-icon>
+                                    <h5 class="mt-4">Sorry! No Result Found</h5>
+                                </div>
+                            </template>
+
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="addmemberModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0">
+                                        <div class="modal-body">
+                                            <form id="memberlist-form" class="needs-validation" >
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <input type="hidden" id="memberid-input"
+                                                               class="form-control" >
+                                                        <div class="">
+                                                            <div class="mb-0 position-relativemt-n4 mx-n4 rounded-top bg-primary p-4">
+                                                                <div class="d-flex position-absolute start-0 end-0 top-0 p-3">
+                                                                    <div class="flex-grow-1">
+                                                                        <h5 class="modal-title text-white">
+                                                                            Thêm nhóm thành viên
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="flex-shrink-0">
+                                                                        <div class="d-flex gap-3 align-items-center">
+                                                                            <button type="button"
+                                                                                    class="btn-close btn-close-white"
+                                                                                    id="createMemberBtn-close"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="Close">
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3 mt-3">
+                                                            <label for="teammembersName" class="form-label">
+                                                                Mã mời
+                                                            </label>
+                                                            <input type="text" class="form-control"
+                                                                   placeholder="Nhập mã nhóm"
+                                                                   x-model="invitedCode"
+                                                                   required>
+
+                                                            <div class="invalid-feedback">
+                                                                Please Enter a member
+                                                                name.
+                                                            </div>
+                                                        </div>
+                                                        <p class="form-text text-muted">
+                                                            Đề nghị giảng viên của
+                                                            bạn cung cấp mã lớp rồi
+                                                            nhập mã đó vào đây.
+                                                        </p>
+                                                        <p class="form-text text-muted">
+                                                            Cách đăng nhập bằng mã
+                                                            lớp học<br>
+                                                            - Sử dụng tài khoản được cấp phép <br>
+                                                            - Sử dụng mã lớp học gồm 7 chữ cái hoặc số, không có
+                                                            dấu cách hoặc ký hiệu
+                                                        </p>
+                                                        <div class="hstack gap-2 justify-content-end">
+                                                            <button type="button" class="btn btn-light"
+                                                                    data-bs-dismiss="modal">
+                                                                Close
+                                                            </button>
+                                                            <button type="button" class="btn btn-primary"
+                                                                     x-on:click="BtnJoinGroup()">
+                                                                Tham gia
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!--end modal-content-->
+                                </div>
+                                <!--end modal-dialog-->
+                            </div>
+                            <!--end modal-->
+                        
+                        
+                            <!-- chi tiết bên cạnh -->
+                            <div class="offcanvas offcanvas-end" abindex="-1"
+                                 id="member-overview">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title" id="offcanvasExampleLabel">nhóm 1</h5>
+                                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                </div>
+                                <div class="offcanvas-body content-side">
+                                    <div class="block block-transparent pull-x pull-t mb-0">
+                                        <ul class="nav nav-tabs nav-tabs-block nav-justified" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link active" id="so-settings-tab" data-bs-toggle="tab"
+                                                        data-bs-target="#so-settings" role="tab" aria-controls="so-settings" aria-selected="true">
+                                                    <i class="fa fa-fw fa-cog me-2"></i> Đề kiểm tra
+                                                </button>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="so-profile-tab" data-bs-toggle="tab" data-bs-target="#so-profile"
+                                                        role="tab" aria-controls="so-profile" aria-selected="false" tabindex="-1">
+                                                    <i class="fa fa-fw fa-bell me-2"></i> Thông báo
+                                                </button>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="so-people-tab" data-bs-toggle="tab" data-bs-target="#so-people"
+                                                        role="tab" aria-controls="so-people" aria-selected="false" tabindex="-1">
+                                                    <i class="far fa-fw fa-user-circle me-2"></i> Bạn bè
+                                                </button>
+                                            </li>
+                                        </ul>
+                                        <!--end nav-tabs-->
+
+                                        <div class="block-content tab-content overflow-hidden">
+                                            <div class="tab-pane pull-x fade fade-up show active" id="so-settings" role="tabpanel"
+                                                 aria-labelledby="so-settings-tab" tabindex="0">
+                                                <div class="list-test px-2">
+                                                    <template x-for="item in _listExams">
+                                                        <div class="block block-rounded block-fx-pop mb-2">
+                                                            <div class="block-content block-content-full border-start border-3">
+                                                                <div class="d-md-flex justify-content-md-between align-items-md-center">
+                                                                    <div class="p-1 p-md-2">
+                                                                        <h3 class="h4 fw-bold mb-3">
+                                                                            <a asp-action="" asp-controller="" class="text-dark link-fx" x-text="item.examName"></a>
+                                                                        </h3>
+                                                                        <p class="fs-sm text-muted mb-0">
+                                                                            <i class="fa fa-clock me-1"></i> Diễn ra từ <span x-text="formatDateTime(item.startTime)"></span>
+                                                                            đến
+                                                                            <span x-text="formatDateTime(item.endTime)"></span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+
+                                            <div class=" tab-pane pull-x fade fade-up" id="so-profile" role="tabpanel"
+                                                 aria-labelledby="so-profile-tab" tabindex="0">
+                                                <ul class="list-announce nav-items my-2">
+                                                    <template x-for="item in _listNoty">
+                                                        <div class="block block-rounded block-fx-pop mb-2">
+                                                            <div class="block-content block-content-full border-start border-3 border-primary">
+                                                                <div class="d-md-flex justify-content-md-between align-items-md-center">
+                                                                    <div class="p-1 p-md-2">
+                                                                        <h3 class="h4 fw-bold mb-3">
+                                                                            <a asp-action="" asp-controller="" class="text-dark link-fx" x-text="item.content"></a>
+                                                                        </h3>
+                                                                        <p class="fs-sm text-muted mb-0">
+                                                                            <i class="fa fa-clock me-1"></i> Thời gian gửi: <span x-text="formatDateTime(item.createdDate)"></span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+
+                                                    <template x-if="_listNoty.length == 0">
+                                                        <p class="text-center">Không có thông báo</p>
+                                                    </template>
+                                                </ul>                        
+
+                                            </div>
+
+                                            <div class="tab-pane pull-x fade fade-up" id="so-people" role="tabpanel" aria-labelledby="so-people-tab"
+                                                 tabindex="0">
+                                                <div class="block mb-0">
+                                                    <div class="block-content block-content-sm block-content-full bg-body">
+                                                        <span class="text-uppercase fs-sm fw-bold">Bạn cùng nhóm</span>
+                                                    </div>
+                                                    <div class="block-content">
+                                                        <ul class="nav-items list-friends">
+                                                            <template x-for="item in _listUsers">
+                                                                <li>
+                                                                    <div class="d-flex py-2 align-items-center">
+                                                                        <div class="flex-shrink-0 mx-3 overlay-container">
+                                                                            <img class="img-avatar img-avatar48" src="~/media/avatar/avatar.jpg" alt="">
+                                                                        </div>
+                                                                        <div class="fw-semibold" x-text="item.fullName"></div>
+                                                                    </div>
+                                                                </li>
+                                                            </template>   
+                                                            <template x-if="_listUsers.length == 0">
+                                                                <p class="text-center">Không có thành viên</p>
+                                                            </template>
+                                                        </ul>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end offcanvas-->
+                        </div>
+                    </div><!-- end col -->
+                </div>
+            </div>
+            <!--end row-->
+        </div><!-- container-fluid -->
+    </div><!-- End Page-content -->
+</div>
+
+

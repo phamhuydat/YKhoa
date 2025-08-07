@@ -1,0 +1,257 @@
+﻿@{
+    ViewBag.Title = "Phân công bộ môn";
+}
+
+@section scripts {
+    <script src="~/adminjs/assignment.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+}
+
+<div x-data="assignment">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="customerList">
+                        <div class="row g-4 mb-3">
+                            <div class="col-sm-auto">
+                                <div>
+                                    <button type="button" class="btn btn-primary add-btn"
+                                            ata-action="create"
+                                            data-bs-toggle="modal" data-bs-target="#modal-add-assignment" id="add_assignment">
+                                        <i class="ri-add-line align-bottom me-1"></i> Thêm phân công giảng viên
+                                    </button>
+                                    <button class="btn btn-soft-danger">
+                                        <i class="ri-delete-bin-2-line"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-lg">
+                                <div class="d-flex justify-content-sm-end">
+                                    <div class="search-box ms-2">
+                                        <input type="text" class="form-control search"
+                                               placeholder="Tìm kiếm tên giảng viên, môn học..." id="searchInput" x-model="searchTerm">
+                                        <i class="ri-search-line search-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive table-card mt-3 mb-1">
+                            <table class="table align-middle table-nowrap" id="customerTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" style="width: 50px;">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="checkAll" value="option">
+                                            </div>
+                                        </th>
+                                        <th>STT</th>
+                                        <th>Tên giảng viên</th>
+                                        <th>Mã MH</th>
+                                        <th>Têm môn học</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="list form-check-all">
+                                    <template x-for="item in paginatedList">
+                                        <tr>
+                                            <th scope="row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           name="chk_child" value="option1">
+                                                </div>
+                                            </th>
+
+                                            <td class="id" x-text="item.rowIndex"></td>
+                                            <td class="email" x-text="item.nameTeacher"></td>
+                                            <td class="gender" x-text="item.subjectCode"></td>
+                                            <td class="roleName" x-text="item.nameSubject"></td>
+                                            <td>
+                                                <a class="btn btn-sm btn-soft-secondary btn-delete-assignment show">
+                                                    <i class="ri-close-fill"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+
+                            <template x-if="paginatedList.length == 0">
+                                <div class="noresult">
+                                    <div class="text-center">
+                                        <lord-icon src="https://cdn.lordicon.com/msoeawqm.json"
+                                                   trigger="loop" colors="primary:#121331,secondary:#08a88a"
+                                                   style="width:75px;height:75px"></lord-icon>
+                                        <h5 class="mt-2">Xin lỗi! không tìm thấy</h5>
+                                        <p class="text-muted mb-0">
+                                            hãy nhập lại tên mà bạn muốn tìm kiếm
+                                        </p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <template x-if="paginatedList.length != 0">
+
+                            <!-- Pagination controls -->
+                            <div class="d-flex justify-content-end mt-3">
+                                <nav>
+                                    <ul class="pagination">
+                                        <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                                            <a class="page-link" href="#" @@click.prevent="prevPage">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                        <template x-for="page in totalPages">
+                                            <li class="page-item" :class="{ 'active': currentPage === page }">
+                                                <a class="page-link" href="#" @@click.prevent="goToPage(page)" x-text="page">1</a>
+                                            </li>
+                                        </template>
+                                        <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                                            <a class="page-link" href="#" @@click.prevent="nextPage">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+
+                        </template>
+
+                    </div>
+                </div><!-- end card -->
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end col -->
+    </div>
+
+
+    <div class="modal fade" id="modal-add-assignment" tabindex="-1" role="dialog" aria-labelledby="modal-add-assignment"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Thêm phân công
+                    </h5>
+                    <button type="button" class="btn-close p-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="block-content tab-content">
+                        <div>
+                            <form class="mb-4 form-phancong">
+                                <div class="row">
+                                    <div class="col-6 d-flex flex-row w-100">
+                                        <div class="d-flex align-items-center">
+                                            <label for="giang-vien" class="form-label" style="width: 100px">
+                                                Giảng viên
+                                            </label>
+                                        </div>
+                                        <select class="js-select2 form-select data-monhoc" data-tab="1" id="giang-vien"
+                                                name="giang-vien" style="width: 100%;"
+                                                x-model="_updinData.userId"
+                                                data-placeholder="Chọn giảng viên cần phân công" required>
+                                            <option value="" selected>Chọn giảng viên cần phân công</option>
+                                            <template x-for="item in _listTeacher">
+                                                <option :value="item.id" x-text="item.fullName"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="mb-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control form-control-alt" id="search-input"
+                                            name="search-input" placeholder="Tìm kiếm môn học...">
+                                    <button class="input-group-text bg-body border-0 btn-search">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mb-4 row">
+                                <div class="table-responsive">
+                                    <table class="table table-vcenter">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="width: 100px;">Chọn</th>
+                                                <th class="text-center">Mã môn học</th>
+                                                <th>Tên môn học</th>
+                                                <th class="text-center">Số tín chỉ</th>
+                                                <th class="text-center">Số tiết lý thuyết</th>
+                                                <th class="text-center">Số tiết thực hành</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="list-subject">
+
+                                            <template x-for="item in _listSubject">
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <input class="form-check-input" type="checkbox" 
+                                                            name="selectSubject" :value="item.id" 
+                                                            x-model="_updinData.subjectId">
+                                                    </td>
+
+                                                    <td class="text-center" x-text="item.subjectCode"></td>
+                                                    <td class="text-center" x-text="item.subjectName"></td>
+                                                    <td class="text-center" x-text="item.credit"></td>
+                                                    <td class="text-center" x-text="item.numTheory"></td>
+                                                    <td class="text-center" x-text="item.numPractice"></td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+
+                                  @*   <template x-if="paginatedList.length != 0">
+                                        <!-- Pagination controls -->
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <nav>
+                                                <ul class="pagination">
+                                                    <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                                                        <a class="page-link" href="#" @@click.prevent="prevPage">
+                                                            <i class="mdi mdi-chevron-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    <template x-for="page in totalPages">
+                                                        <li class="page-item" :class="{ 'active': currentPage === page }">
+                                                            <a class="page-link" href="#" @@click.prevent="goToPage(page)" x-text="page"></a>
+                                                        </li>
+                                                    </template>
+                                                    <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                                                        <a class="page-link" href="#" @@click.prevent="nextPage">
+                                                            <i class="mdi mdi-chevron-right"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </template> *@
+
+                                </div>
+                            </div>
+                            <div class="mb-4 d-flex flex-row-reverse">
+                                <button type="button" class="btn btn-soft-primary" 
+                                    id="btn_assignment" x-on:click="Save()">
+                                    <i class="fa fa-fw fa-plus me-1"></i> Lưu phân công
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+

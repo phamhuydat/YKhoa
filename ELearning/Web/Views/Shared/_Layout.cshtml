@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none"
+	data-preloader="disable">
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<link rel="shortcut icon" href="~/edu.ico">
+
+		<title>@ViewData["Title"]</title>
+		<!-- fullcalendar css -->
+		<link href="~/assets/libs/fullcalendar/main.min.css" rel="stylesheet" asp-append-version="true" />
+
+		<!-- Layout config Js -->
+		<script src="~/assets/js/layout.js"></script>
+		<!-- Bootstrap Css -->
+		<link href="~/assets/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+		<!-- Icons Css -->
+		<link href="~/assets/css/icons.min.css" rel="stylesheet" asp-append-version="true" />
+		<!-- App Css-->
+		<link href="~/assets/css/app.min.css" rel="stylesheet" asp-append-version="true" />
+
+		<link href="~/lib/bootstrap-notify/css/bootstrap-notify.css" rel="stylesheet" />
+
+		<link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+
+		<!-- custom Css-->
+		<link href="~/assets/css/custom.css" rel="stylesheet" asp-append-version="true" />
+
+		@RenderSection("head", false)
+	</head>
+
+	<body>
+		<div id="layout-wrapper">
+
+			<partial name="_header.cshtml" />
+
+			<vc:main-nav-bar-client></vc:main-nav-bar-client>
+
+			@RenderBody()
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<!-- JAVASCRIPT -->
+		<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+
+		<script src="~/assets/libs/simplebar/simplebar.min.js" asp-append-version="true"></script>
+
+		<script src="~/assets/libs/node-waves/waves.min.js" asp-append-version="true"></script>
+
+		<script src="~/assets/libs/feather-icons/feather.min.js" asp-append-version="true"></script>
+
+		<script src="~/assets/js/pages/plugins/lord-icon-2.1.0.js" asp-append-version="true"></script>
+
+		<script src="~/assets/js/site.js" asp-append-version="true"></script>
+
+		@RenderSection("scripts", required: false)
+
+		<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+
+		<script src="~/lib/bootstrap-notify/js/bootstrap-notify.js"></script>
+		<script type="text/javascript"
+			src="@Url.Content("~/assets/libs/choices.js/public/assets/scripts/choices.min.js")"></script>
+		<script type="text/javascript" src="@Url.Content("~/assets/libs/flatpickr/flatpickr.min.js")"></script>
+
+		<script src="~/assets/js/app.js" asp-append-version="true"></script>
+		<script defer src="~/lib/alpinejs/cdn.js"></script>
+
+
+		<script>
+			flatpickr("#datepicker", {
+				locale: "vi",
+				dateFormat: "d-m-Y",
+			});
+
+			flatpickr("#time-start", {
+				enableTime: true,
+				dateFormat: "d-m-Y",
+				time_24hr: true
+			});
+
+			flatpickr("#time-end", {
+				enableTime: true,
+				dateFormat: "d-m-Y",
+				time_24hr: true
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,16 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+
+
+@model IPagedList
+@{
+
+	string _params = "";
+	foreach (var item in Context.Request.Query)
+	{
+		if (item.Key != "page")
+		{
+			_params += $"&{item.Key}={item.Value}";
+		}
+	}
+}

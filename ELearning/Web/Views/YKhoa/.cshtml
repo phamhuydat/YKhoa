@@ -1,0 +1,223 @@
+﻿@model IEnumerable<Web.ViewModels.QuestionExamVM.ResQuestionVM>
+@{
+	Layout = null;
+}
+@{
+	ViewBag.Title = "Bài thi";
+}
+
+@section head {
+	<link rel="stylesheet" href="~/css/dashmix.css">
+	<link rel="stylesheet" href="~/css/custom.css">
+	<script src="~/js/lib/jquery.min.js"></script>
+}
+
+@section Scripts {
+
+}
+
+<div class="main-content">
+	<div class="page-content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+						<h4 class="mb-sm-0">Bắt đầu làm bài</h4>
+						<div class="page-title-right">
+							<ol class="breadcrumb m-0">
+								<li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
+								<li class="breadcrumb-item active">Team</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="content row justify-content-center align-items-center">
+				<div class="content row justify-content-center align-items-center">
+					<!-- Page Content -->
+@* 					 <nav class="nav border-bottom bg-white position-fixed top-0 w-100">
+					 	<div class="nav-right d-flex align-items-center">
+					 		<div class="nav-time me-4">
+					 			<span class="fw-bold">
+					 				<i class="far fa-clock mx-2"></i>
+					 				<span id="timer">60</span>
+					 			</span>
+					 		</div>
+					 		<button class="btn btn-hero btn-primary" type="button">
+					 			<i class="far fa-file-lines me-1"></i> Nộp bài
+					 		</button>
+					 	</div>
+					 </nav> *@
+				</div>
+				@* <div class="nav-right d-flex align-items-center">
+					<div class="nav-time me-4">
+						<span class="fw-bold">
+							<i class="far fa-clock mx-2"></i>
+							<span id="timer">60</span>
+						</span>
+					</div>
+					<button class="btn btn-hero btn-primary" type="button">
+						<i class="far fa-file-lines me-1"></i> Nộp bài
+					</button>
+				</div> *@
+			</div>
+
+
+			<div class="container mb-5 mt-6">
+				<form id="QuizForm">
+					<div class="row">
+						<div class="col-8" id="list-question">
+							<div class="question rounded border mb-3 bg-white">
+								<div class="question-top p-3" id="questionContainer">
+									
+									@* <p class="question-content fw-bold mb-3" id="questionContent">
+										@Model.question.Content
+									</p>
+									<div class="row">
+										@foreach (var answer in Model.question.answers)
+										{
+											<div class="col-6 mb-1">
+												<input type="checkbox" name="answer" value="@answer.Id">
+												<span>@answer.AnswerContent</span>
+											</div>
+										}
+										<partial name="_partialAnswer" model="@Model" />
+									</div> *@
+								</div>
+							</div>
+						</div>
+						<div class="">
+							<div class="text-left mt-4">
+								<button class="btn btn-hero btn-primary" type="submit" id="checkAnswerBtn">
+									<i class="far fa-file-lines me-1"></i> Trả lời
+								</button>
+							</div>
+							<div class="text-right mt-4">
+								<button class="btn btn-hero btn-primary" type="button" id="nextQuestion">
+									<i class="far fa-file-lines me-1"></i> Tiếp theo
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div id="explanation"></div>
+
+			</div> <!-- END Page Content -->
+		</div>
+
+	</div>
+
+</div>
+<script>
+	// Dữ liệu câu hỏi từ Model
+	const question = @Html.Raw(Json.Serialize(Model.ToList()));
+	let currentIndex = 0;
+
+	function renderQuestion(index) {
+		// Kiểm tra dữ liệu câu hỏi
+		const q = question[index];
+		if (!q || !q.content || !q.answers || !Array.isArray(q.answers)) {
+			document.getElementById("questionContainer").innerHTML = "<p>Vui lòng nộp bài</p>";
+			return;
+		}
+
+		// Tạo HTML cho câu hỏi và đáp án
+		let html = `
+			<div id="question" data-question-id="${q.id}"></div>
+			<p class="question-content fw-bold mb-3" id="questionContent">
+				${q.content}
+			</p>
+			<div class="row">
+		`;
+		q.answers.forEach(answer => {
+			if (answer && answer.id && answer.answerContent) { // Kiểm tra dữ liệu đáp án
+				html += `
+					<div class="col-6 mb-1">
+						<input type="checkbox" name="answer" value="${answer.id}">
+							<span>${answer.answerContent}</span>
+					</div>
+				`;
+			}
+		});
+		html += `</div>`;
+
+		// Cập nhật DOM
+		const questionContainer = document.getElementById("questionContainer");
+		const checkAnswerBtn = document.getElementById("checkAnswerBtn");
+		const nextQuestionBtn = document.getElementById("nextQuestion");
+		const explanation = document.getElementById("explanation");
+
+		// Kiểm tra sự tồn tại của các phần tử DOM
+		if (!questionContainer || !checkAnswerBtn || !nextQuestionBtn || !explanation) {
+			console.error("Một hoặc nhiều phần tử DOM không tồn tại.");
+			return;
+		}
+
+		questionContainer.innerHTML = html;
+		questionContainer.dataset.questionId = q.id; // Sử dụng q.id (chữ thường)
+		explanation.innerHTML = ""; // Xóa phần giải thích
+	}
+
+	// Gọi hàm renderQuestion khi trang tải
+	document.addEventListener("DOMContentLoaded", () => {
+		if (!document.getElementById("questionContainer")) {
+			console.error("questionContainer không tồn tại trên trang.");
+			return;
+		}
+		renderQuestion(currentIndex);
+	});
+
+
+	document.getElementById("QuizForm").addEventListener("submit", async function (e) {
+		e.preventDefault(); // ❌ Ngăn submit truyền thống (full page reload)
+
+		const questionId = document.getElementById("question").dataset.questionId;
+
+		const selectAnswer = Array.from(document.querySelectorAll("input[name='answer']:checked"))
+			.map(cb => parseInt(cb.value));
+
+		if (selectAnswer.length != 0) {
+			document.getElementById("checkAnswerBtn").disabled = false;
+		}
+
+		const response = await fetch('/YKhoa/submitanswers', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ questionId: parseInt(questionId), selectAnswer })
+		});
+
+		const data = await response.json();
+		const explanationBox = document.getElementById('explanation');
+
+		if (!data.isCorrect) {
+			explanationBox.innerHTML = `
+            ${data.wrongAnswers.length > 0 ? `
+            <strong>Đáp án sai bạn đã chọn:</strong>
+            <ul>
+                ${data.wrongAnswers.map(a => `<li style ="color:red"><strong>${a.content}</strong>: ${a.explanation}</li>`).join('')}
+            </ul>` : ''}
+
+            ${data.missedAnswers.length > 0 ? `
+            <strong>Đáp án đúng bạn đã bỏ sót:</strong>
+            <ul>${data.missedAnswers.map(a => `<li>${a}</li>`).join('')}</ul>` : ''}
+
+            <strong>Đáp án đúng bạn chọn là:</strong>
+            <ul>${data.correctAnswers.map(a => `<li>${a}</li>`).join('')}</ul>
+        `;
+		} else {
+			explanationBox.innerHTML = `<span style="color: green;"><strong>Chính xác!</strong></span>`;
+		}
+
+		// Optional: Vô hiệu hóa nút trả lời sau khi đã trả lời
+	});
+
+
+
+	document.getElementById("nextQuestion").addEventListener("click", () => {
+		currentIndex++;
+		renderQuestion(currentIndex);
+	});
+
+</script>

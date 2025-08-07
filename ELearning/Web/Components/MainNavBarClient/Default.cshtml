@@ -1,0 +1,113 @@
+﻿@model Web.Components.MainNavBarClient.NavBarViewClientModel
+@using Web.WebConfig.Consts
+
+@{
+    var currentControllerName = Context.Request.RouteValues["controller"].ToString();
+    string href = "";
+    string menuOpenClass = "";
+    string activeClass = "";
+    string childMenuOpenClass = "";
+    bool itemIsOpened;
+    bool item2IsOpened;
+}
+
+<div class="app-menu navbar-menu">
+    <!-- LOGO -->
+    <div class="navbar-brand-box">
+        <!-- Dark Logo-->
+        <a asp-action="index" asp-controller="Home" class="logo logo-dark">
+            <span class="logo-sm">
+                <img src="~/assets/images/logo-sm.jpg" alt="" height="70">
+            </span>
+            <span class="logo-lg">
+                <img src="~/assets/images/logo-dark.png" alt="" height="17">
+            </span>
+        </a>
+
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+                id="vertical-hover">
+            <i class="ri-record-circle-line"></i>
+        </button>
+    </div>
+
+
+    <div id="scrollbar">
+        <div class="container-fluid mb-3">
+            <div id="two-column-menu"></div>
+            <ul class="navbar-nav" id="navbar-nav">
+
+                @foreach (var item in Model.Items)
+                {
+                    if (!User.IsInPermission(item.Permission))
+                    {
+                        continue;
+                    }
+
+                    @* href = "#"; *@
+                    href = "#sidebar" + item.SidebarText;
+                    if (!(item.Action + item.Controller).IsNullOrEmpty())
+                    {
+                        href = Url.Action(item.Action, item.Controller);
+                    }
+
+
+                    menuOpenClass = "";
+                    activeClass = "";
+                    itemIsOpened = item.ChildrenItems != null && item.ChildrenItems.Any(i => i.Controller == currentControllerName);
+
+                    if (itemIsOpened)
+                    {
+                        menuOpenClass = " menu-open";
+                        activeClass = " active";
+                    }
+                    else if (item.Controller == currentControllerName)
+                    {
+                        activeClass = " active";
+                    }
+
+
+                    var hasChildren = item.ChildrenItems != null && item.ChildrenItems.Any();
+
+
+                    <li class="nav-item @(menuOpenClass)">
+                        <a href="@href" class="nav-link @activeClass role="button"
+                           data-bs-toggle="@(hasChildren ? "collapse" : "")" aria-expanded="@itemIsOpened.ToString().ToLower()"
+                           aria-controls="sidebar@(item.SidebarText)">
+                            <i class="las la-@item.Icon"></i>
+                            <span>@item.DisplayText</span>
+                        </a>
+
+                        @if (hasChildren)
+                        {
+                            <div class="collapse menu-dropdown @(itemIsOpened ? "show" : "")" id="sidebar@(item.SidebarText)">
+                                <ul class="nav nav-sm flex-column">
+                                    @foreach (var sub in item.ChildrenItems)
+                                    {
+                                        if (!User.IsInPermission(sub.Permission))
+                                        {
+                                            continue;
+                                        }
+                                        activeClass = sub.Controller == currentControllerName ? "active" : "";
+                                        <li class="nav-item">
+                                            <a asp-action=@sub.Action
+                                               asp-controller=@sub.Controller
+                                               class="nav-link @(activeClass)">
+                                                @sub.DisplayText
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </li>
+                }
+            </ul>
+
+        </div>
+        <!-- Sidebar -->
+    </div>
+
+    <div class="sidebar-background"></div>
+</div>
+
+

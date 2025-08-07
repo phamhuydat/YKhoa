@@ -1,0 +1,35 @@
+﻿@{
+	var typeOfMesg = "";
+	var mesg = "";
+}
+@if (TempData["Err"] != null)
+{
+	typeOfMesg = "danger";
+	mesg = TempData["Err"].ToString();
+}
+else if (TempData["Success"] != null)
+{
+	typeOfMesg = "success";
+	mesg = TempData["Success"].ToString();
+}
+
+@if (!typeOfMesg.IsNullOrEmpty())
+{
+	@if (typeOfMesg == "success")
+	{
+		<div class="alert alert-success alert-dismissible alert-label-icon rounded-label fade show mb-0" role="alert">
+			<i class="ri-check-double-line label-icon"></i><strong>Thành công</strong>
+			- @mesg
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+
+	}
+	else
+	{
+		<div class="alert alert-danger alert-dismissible alert-label-icon rounded-label fade show mb-0" role="alert">
+			<i class="ri-alert-line label-icon"></i><strong>Thất bại</strong>
+			- @mesg
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	}
+}

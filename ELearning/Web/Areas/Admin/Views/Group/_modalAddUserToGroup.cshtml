@@ -1,0 +1,113 @@
+﻿<div class="modal fade" id="modal-add-user" tabindex="-1" role="dialog" aria-labelledby="modal-add-user"
+     aria-hidden="true">
+    <div class="modal-lg modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <ul class="nav nav-tabs nav-tabs-custom nav-primary" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" id="them-thu-cong-tab" data-bs-toggle="tab"
+                                data-bs-target="#them-thu-cong" role="tab" aria-controls="them-thu-cong"
+                                aria-selected="true">
+                            Thêm thủ công
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link" id="ma-moi-tab" data-bs-toggle="tab" data-bs-target="#ma-moi"
+                                role="tab" aria-controls="ma-moi" aria-selected="false">
+                            Tham gia bằng mã mời
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link" id="them-file-excel-tab" data-bs-toggle="tab"
+                                data-bs-target="#them-file-excel" role="tab" aria-controls="them-file-excel"
+                                aria-selected="false">
+                            Thêm bằng file Excel
+                        </button>
+                    </li>                    
+                </ul>
+                <button type="button" class="btn btn-close p-3" data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body tab-content">
+                <div class="tab-pane fade fade-up show active" id="them-thu-cong" role="tabpanel"
+                        aria-labelledby="them-thu-cong-tab" tabindex="0">
+                    <form id="add-user">
+                        <div class="mb-3">
+                            <label for="mssv" class="form-label">Mã sinh viên</label>
+                            <input type="text" class="form-control" 
+                                name="mssv" id="mssv" x-model="mssv"
+                                    placeholder="Mã sinh viên" required>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="hstack gap-2 justify-content-end">
+                                <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                          x-on:click="BtnAddUser()">
+                                    Thêm sinh viên
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="tab-pane fade fade-up" id="ma-moi" role="tabpanel" aria-labelledby="ma-moi-tab"
+                        tabindex="0">
+                    <h2 class="display-1 text-center py-6" id="show-invited-code"
+                        x-text="InvitedCode">
+                    </h2>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <p class="text-center mb-0" x-text="groupName">
+                        </p>
+                        <div>
+                            <button type="button" class="btn btn-primary btn-copy-code" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" title="Sao chép mã mời">
+                                <i class="ri-file-copy-fill"></i>
+                            </button>
+                            <button type="button" class="btn btn-primary"
+                                    x-on:click="BtnResetInvitedCode()">
+                                <i class="ri-restart-line me-1"></i>Tạo mã mới
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade fade-up" id="them-file-excel" role="tabpanel"
+                        aria-labelledby="them-file-excel-tab" tabindex="0">
+                    <form id="form-upload" method="POST" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label for="user_password" class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control form-control-alt" name="user_password"
+                                    id="ps_user_group" placeholder="Nhập mật khẩu cho sinh viên!">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label" for="js-ckeditor">Nội dung</label>
+                            <input class="form-control" type="file" id="file-cau-hoi" accept=".xlsx, .xls, .csv"
+                                    required>
+                        </div>
+                        <div class="mb-4">
+                            <em>
+                                Vui lòng soạn người dùng theo đúng định dạng. <a href="">
+                                    Tải về file mẫu
+                                    Docx
+                                </a>
+                            </em>
+                        </div>
+                        <div class="mb-4 d-flex justify-content-between">
+                            <button type="submit" class="btn btn-hero btn-primary" id="nhap-file">
+                                <i class="fa fa-cloud-arrow-up"></i> Thêm vào hệ thống
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

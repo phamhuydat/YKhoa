@@ -1,0 +1,168 @@
+﻿@model IEnumerable<Web.ViewModels.QuestionExamVM.ResQuestionVM>
+@{
+	Layout = null;
+}
+@{
+	ViewBag.Title = "Bài thi";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>ChatBox Y Tế</title>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+		<link href="~/css/quizthame.css" rel="stylesheet" />
+	</head>
+
+	<body data-quiz-id="@ViewBag.QuizId">
+		<div class="chat-container">
+			<div class="chat-header">
+				<h1 class="chat-title">ChatBox AI</h1>
+			</div>
+
+			<div class="chat-body">
+				<div class="sidebar">
+					<h6>Tình huống nhị khoa:</h6>
+
+					<div class="info-card">
+						<h6><i class="fas fa-thermometer-half"></i> Ngày 1-2:</h6>
+						<p>Sinh hiệu: Nhiệt độ: 38.8°C Mạch: 120 lần/phút Huyết áp: 100/65 mmHg Nhịp thở: 36 lần/phút.
+							Điều trị: Tắm sáng.</p>
+					</div>
+
+					<div class="info-card">
+						<h6><i class="fas fa-procedures"></i> Ngày 1-2:</h6>
+						<p>Trẻ khởi bệnh với biểu hiện sốt cao liên tục 39-40°C, kèm theo mệt mỏi, ăn uống kém, đau đầu
+							âm ỉ. Gia đình có tư cho nóng hạ sốt (paracetamol) nhưng trẻ chỉ giảm sốt thoáng qua rồi sốt
+							lại.</p>
+					</div>
+
+					<div class="info-card">
+						<h6><i class="fas fa-calendar-day"></i> Ngày 3:</h6>
+						<p>Trẻ xuất hiện nôn ói 2-3 lần trong ngày, đau đầu tăng dần, không kèm tiêu chảy. Trẻ quấy khóc
+							nhiều, thần dân có, không muốn ăn uống. Gia đình đưa trẻ đến phòng khám tư: được chẩn đoán
+							viêm họng và kê kháng sinh uống - hạ sốt.</p>
+					</div>
+
+					<div class="info-card">
+						<h6><i class="fas fa-hospital"></i> Ngày 4:</h6>
+						<p>Sáng sớm, trẻ đột ngột co giật toàn thân khoảng 2 phút, mắt trợn, sùi bọt mép, sau đó hôn mê,
+							ngủ lì bì. Gia đình vội đưa trẻ nhập viện Nhi Đồng.</p>
+					</div>
+				</div>
+
+				<div class="chat-main">
+					<div class="question-section" data-question-id="">
+					  	<div class="medical-illustration">
+					  		<i class="fas fa-thermometer-half"></i>
+					  	</div>
+
+					  	<div class="question-title"></div>
+					  	<div class="question-text"></div>
+
+					  	<div class="answer-option" onclick="selectAnswer(this)">
+					  		<div class="option-letter"></div>
+					  		<div></div>
+					  	</div>
+
+					  	<div class="answer-option" onclick="selectAnswer(this)">
+					  		<div class="option-letter"></div>
+					  		<div></div>
+					  	</div>
+
+					  	<div class="answer-option" onclick="selectAnswer(this)">
+					  		<div class="option-letter"></div>
+					  		<div></div>
+					  	</div>
+
+					  	<div class="answer-option" onclick="selectAnswer(this)">
+					  		<div class="option-letter"></div>
+					  		<div></div>
+					  	</div>
+
+					  	<div class="explanation">
+					  		<p><strong>Giải thích:</strong></p>
+					  	</div>
+					</div>
+
+					<div class="navigation-buttons">
+						<button class="back-button" id="backBtn" onclick="previousQuestion()" disabled>
+							<i class="fas fa-arrow-left"></i>
+							Quay lại
+						</button>
+
+						<button class="next-button" id="nextBtn" onclick="nextQuestion()">
+							Tiếp theo
+							<i class="fas fa-arrow-right"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Chat Window -->
+		<div class="chat-window" id="chatWindow">
+			<div class="chat-window-header">
+				<div class="d-flex align-items-center">
+					<div class="message-avatar me-2">
+						<i class="fas fa-robot"></i>
+					</div>
+					<h6>ChatBot Y Tế</h6>
+				</div>
+				<button class="chat-close" onclick="closeChat()">
+					<i class="fas fa-times"></i>
+				</button>
+			</div>
+
+			<div class="chat-messages" id="chatMessages">
+				<div class="message bot">
+					<div class="message-avatar">
+						<i class="fas fa-robot"></i>
+					</div>
+					<div class="message-content">
+						Xin chào! Tôi là ChatBot Y Tế. Bạn cần tôi giúp gì không?
+					</div>
+				</div>
+
+				<div class="message user">
+					<div class="message-content">
+						Bạn có thể giúp tôi gì không?
+					</div>
+					<div class="message-avatar">
+						<i class="fas fa-user"></i>
+					</div>
+				</div>
+
+				<div class="message bot">
+					<div class="message-avatar">
+						<i class="fas fa-robot"></i>
+					</div>
+					<div class="message-content">
+						Tôi có thể biết về công thức máu, chẩn đoán bệnh, tư vấn điều trị và trả lời các câu hỏi y khoa.
+						Bạn có câu hỏi nào không?
+					</div>
+				</div>
+			</div>
+
+			<div class="chat-input-area">
+				<input type="text" class="chat-input-field" id="chatInput" placeholder="Nhập tin nhắn của bạn..."
+					onkeypress="handleKeyPress(event)">
+				<button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">
+					<i class="fas fa-paper-plane"></i>
+				</button>
+			</div>
+		</div>
+
+		<div class="chat-input" onclick="toggleChat()">
+			<i class="fas fa-comments"></i>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+		<script src="~/clientjs/quiz.js"></script>
+	</body>
+
+</html>

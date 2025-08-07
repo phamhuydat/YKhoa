@@ -1,0 +1,15 @@
+﻿@model IEnumerable<Data.Entities.Group>
+@{
+	int? selectedId = (int?)ViewBag.SelectedId;
+}
+
+@foreach (var item in Model)
+{
+	if (selectedId.HasValue && selectedId.Value == item.Id)
+	{
+		<option selected="selected" value="@item.Id">@item.GroupName</option>
+		continue;
+	}
+	<option value="@item.Id">@item.GroupName</option>
+
+}

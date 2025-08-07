@@ -1,0 +1,78 @@
+﻿<div class="modal fade" id="modal-add-group" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="block block-rounded block-themed block-transparent mb-0">
+                <div class="modal-header bg-primary-dark">
+                    <h3 class="modal-title" x-text="_modalSetting.title"></h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-fw fa-times"></i>
+                    </button>
+                </div>
+                                   
+                <div class="modal-body">
+                    <form class="fs-sm" id="form-add-group">
+                        <div class="mb-3">
+                            <label for="" class="form-label">Tên nhóm</label>
+                            <input type="text" class="form-control" name="ten-nhom" id="ten-nhom" x-model="_updinData.groupName"
+                                   placeholder="Nhập tên nhóm">
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Ghi chú</label>
+                            <input type="text" class="form-control" name="ghi-chu" id="ghi-chu" x-model="_updinData.note"
+                                   placeholder="Nhập ghi chú">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Môn học</label>
+                            <select class="js-select2 form-select"
+                                    x-model="_updinData.subjectId"
+                                    id="mon-hoc"
+                                    style="width: 100%;">
+                                <option value="" disabled selected>Chọn môn học</option>
+                                <template x-for="item in _listSubject">
+                                    <option :value="item.id" x-text="item.subjectName"></option>
+                                </template>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <div class="col-6">
+                                <label for="" class="form-label">Năm học</label>
+                                <select class="js-select2 form-select" id="nam-hoc" style="width: 100%;" 
+                                        x-model="_updinData.academicYear">
+                                    <option value="" disabled selected>Chọn năm học</option>
+                                    <template x-for="year in _years">
+                                        <option :value="year" x-text="year"></option>
+                                    </template>
+
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="" class="form-label">Học kỳ</label>
+                                <select class="js-select2 form-select" id="hoc-ky" style="width: 100%;" 
+                                        x-model="_updinData.semester">
+                                    <option data-placeholder>Chọn học kỳ</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-alt-secondary me-1"
+                                data-bs-dismiss="modal">
+                            Đóng
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-primary"
+                                x-text="_modalSetting.primaryButtonText"
+                                x-on:click="SaveData()">
+                            Lưu
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

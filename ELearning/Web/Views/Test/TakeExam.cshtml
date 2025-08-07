@@ -1,0 +1,122 @@
+﻿@{
+	Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Làm bài kiểm tra</title>
+
+		<link rel="shortcut icon" href="~/edu.ico">
+		<!-- Stylesheets -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="stylesheet" href="~/css/dashmix.css">
+		<link rel="stylesheet" href="~/css/custom.css">
+	</head>
+
+	<body x-data="takeTest">
+		<!-- Page Container -->
+		<div id="page-container">
+			<!-- Main Container -->
+			<main id="main-container">
+				<!-- Page Content -->
+				<nav class="nav border-bottom bg-white position-fixed top-0 w-100">
+					<div class="container d-flex justify-content-between align-items-center py-2">
+						@*                     <button class="btn btn-hero btn-danger" role="button">
+                        <i class="fa fa-power-off"></i>
+                        Thoát
+                    </button> *@
+						<div class="nav-center">
+							<span class="fw-bold fs-5" x-text="'Tên: ' + infoExam.userName"> </span>
+						</div>
+						<div class="nav-right d-flex align-items-center">
+							<div class="nav-time me-4">
+								<span class="fw-bold">
+									<i class="far fa-clock mx-2"></i>
+									<span id="timer" x-text="infoExam.workTime"></span>
+								</span>
+							</div>
+							<button class="btn btn-hero btn-primary" type="button" x-on:click="submitAnswers()">
+								<i class="far fa-file-lines me-1"></i> Nộp bài
+							</button>
+						</div>
+					</div>
+				</nav>
+
+				<div class="container mb-5 mt-6" id="dethicontent" data-id="36">
+					<div class="row">
+						<div class="col-8" id="list-question">
+							<template x-for="(item, index) in _listQuestion">
+								<div class="question rounded border mb-3 bg-white" :id="'question-' + index">
+									<div class="question-top p-3">
+										<p class="question-content fw-bold mb-3"
+											x-text="index + 1 + '. ' + item.content">
+											@*  1. Câu hỏi số 1 *@
+										</p>
+										<div class="row">
+											<template x-for="(answer, index) in item.answers">
+												<div class="col-6 mb-1">
+													<b x-text="String.fromCharCode(65 + index)"></b>
+													<span x-text="answer.answerContent"></span>
+												</div>
+											</template>
+										</div>
+									</div>
+
+									<div class="test-ans bg-primary rounded-bottom py-2 px-3 d-flex align-items-center">
+										<p class="mb-0 text-white me-4">Đáp án của bạn:</p>
+										<div class="d-flex">
+											<template x-for="(answer, index) in item.answers" :key="index">
+												<div>
+													<input type="checkbox" class="btn-check answer-radio"
+														:id="'question-' + item.id + '-answer-' + answer.id"
+														:name="'question-' + item.id" :value="answer.id"
+														x-bind:checked="userAnswers[item.id]?.answerId == answer.id"
+														@@change="saveAnswer(item.id, answer.id)">
+													<label class="btn btn-light rounded-pill me-2 btn-answer"
+														:for="'question-' + item.id + '-answer-' + answer.id"
+														x-text="String.fromCharCode(65 + index)">
+													</label>
+												</div>
+											</template>
+										</div>
+									</div>
+								</div>
+							</template>
+
+						</div>
+						<div class="col-4 bg-white p-3 rounded border h-100 sidebar-answer">
+							<ul class="answer">
+								<template x-for="(item, index) in _listQuestion">
+									<li class="answer-item p-1">
+										<a href="javascript:void(0)" class="answer-item-link btn w-100 btn-sm" :class="{
+                                           'active': userAnswers[item.id]?.answerId != null,
+                                           'btn-outline-primary': !unansweredQuestions.includes(item.id),
+                                           'btn-outline-danger': unansweredQuestions.includes(item.id)
+                                        }" @@click="scrollToQuestion(index)">
+											<span x-text="index + 1"></span>
+										</a>
+									</li>
+								</template>
+							</ul>
+						</div>
+					</div>
+				</div> <!-- END Page Content -->
+			</main>
+		</div>
+		<!-- END Page Container -->
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+		<script src="~/assets/js/site.js" asp-append-version="true"></script>
+
+		<script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+		<!-- AlpineJs  -->
+		<script src="~/ClientJs/takeExam.js" asp-append-version="true"></script>
+		<script defer src="~/lib/alpinejs/cdn.js"></script>
+
+	</body>
+
+</html>

@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Danh sách môn học";
+
+}
+@section head{
+    <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.css" rel="stylesheet">
+}
+
+@section scripts{
+    <script src="~/assets/libs/list.pagination.js/list.pagination.min.js"></script>
+    <script src="~/AdminJs/subject.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
+}
+
+<div x-data="subjects">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Danh sách môn học</h4>
+                </div><!-- end card header -->
+
+                <div class="card-body">
+                    <div id="customerList">
+                        <div class="row g-4 mb-3">
+                            <div class="col-sm-auto">
+                                <div>
+                                    @if (User.IsInPermission(AuthConst.AppSubject.CREATE))
+                                    {
+                                        <button type="button" class="btn btn-primary add-btn"
+                                                x-on:click="OpenModalAdd()">
+                                            <i class="ri-add-line align-bottom me-1"></i> Thêm môn học
+                                        </button>                                        
+                                    }
+
+                                    <button class="btn btn-soft-danger"
+                                            onClick="deleteMultiple()">
+                                        <i class="ri-delete-bin-2-line"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-sm">
+                                <div class="d-flex justify-content-sm-end">
+                                    <div class="search-box ms-2">
+                                        <input type="text" class="form-control search"
+                                               placeholder="Search...">
+                                        <i class="ri-search-line search-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive table-card mt-3 mb-1">
+
+                            <table class="table align-middle table-nowrap" id="customerTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" style="width: 50px;">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="checkAll" value="option">
+                                            </div>
+                                        </th>
+
+                                        <th>Mã môn</th>
+                                        <th>Tên môn</th>
+                                        <th>Số tín chỉ</th>
+                                        <th>Số tiết lý thuyết</th>
+                                        <th>Số tiết thực hành</th>
+                                        <th>Hoạt động</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="list form-check-all">
+                                    <template x-for="item in _list">
+                                        <tr>
+                                            <th scope="row">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           name="chk_child" value="option1">
+                                                </div>
+                                            </th>
+                                            <td class="id" style="display:none;">
+                                                <a class="fw-medium link-primary" x-text="item.id"></a>
+                                            </td>
+                                            <td class="subjectCode" x-text="item.subjectCode"></td>
+                                            <td class="subjectName">
+                                                <div class="d-flex flex-column">
+                                                    <strong class="text-primary" x-text="item.subjectName"></strong>
+                                                    <p x-text="item.email"></p>
+                                                </div>
+                                            </td>
+                                            <td class="credit" x-text="item.credit"></td>
+                                            <td class="numTheory" x-text="item.numTheory"></td>
+                                            <td class="numPractice" x-text="item.numPractice"></td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <div class="info">
+                                                        <button type="button" class="btn btn-sm edit-item-btn link-success fs-15"
+                                                           x-on:click="OpenModalChapter(item.id)">
+                                                            <i class="las la-info-circle"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="edit">
+                                                        <a class="btn btn-sm edit-item-btn link-primary fs-15"
+                                                           x-on:click="OpenModalUpdate(item.id)">
+                                                            <i class="ri-edit-2-line"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="remove">
+                                                        <a class="btn btn-sm remove-item-btn link-danger fs-15" 
+                                                            x-on:click="DeleteSubject(item.id)">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+
+                            <div class="noresult" style="display:none">
+                                <div class="text-center">
+                                    <lord-icon src="https://cdn.lordicon.com/msoeawqm.json"
+                                               trigger="loop" colors="primary:#121331,secondary:#08a88a"
+                                               style="width:75px;height:75px"></lord-icon>
+                                    <h5 class="mt-2">Xin lỗi! không tìm thấy</h5>
+                                    <p class="text-muted mb-0">
+                                        hãy nhập lại tên mà bạn muốn tìm kiếm
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                       
+                    </div>
+                </div><!-- end card -->
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end col -->
+    </div>
+    <!-- end row -->
+      
+    <partial name="_modalUpSert" />
+    <partial name="_modalChapter" />
+
+</div>

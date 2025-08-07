@@ -1,0 +1,304 @@
+﻿@model Web.ViewModels.ClientExamVM.ListExamUserVM;
+
+@{
+    ViewBag.Title = "Bài thi";
+}
+
+@section head {
+    <link rel="stylesheet" href="~/css/dashmix.css">
+    <link rel="stylesheet" href="~/css/custom.css">
+    <script src="~/js/lib/jquery.min.js"></script>
+}
+
+@section Scripts {
+    <script src="~/clientjs/startExam.js" asp-append-version="true"></script>
+}
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Danh sách bài thi</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
+                                <li class="breadcrumb-item active">Team</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="content row justify-content-center align-items-center">
+                <div class="col-lg-6 col-md-12 bg-white p-4 rounded">
+                    <h4 class="text-center">@Model.ExamName</h4>
+                    <div class="exam-info mb-3">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <span class="text-primary"><i class="far fa-clock me-2"></i></span><span> Thời gian làm bài</span>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span>@Model.WorkTime</span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <span class="text-primary"><i class="far fa-calendar-days me-2"></i></span><span>
+                                    Thời gian mở
+                                    đề
+                                </span>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span>@Model.StartTime.ToDMYHM()</span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <span class="text-primary"><i class="far fa-calendar-xmark me-2"></i></span><span>
+                                    Thời gian kết
+                                    thúc
+                                </span>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span>@Model.EndTime.ToDMYHM()</span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <span class="text-primary"><i class="far fa-circle-question me-2"></i></span><span>
+                                    Số lượng câu
+                                    hỏi
+                                </span>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span>@Model.TotalQuestion</span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <span class="text-primary"><i class="far fa-file-lines me-2"></i></span><span> Môn học</span>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span>@Model.SubjectName</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.IsStatus == 0)
+                    {
+                        <button class='btn btn-hero btn-light w-100' role='button'>Chưa tới thời gian mở đề</button>
+                    }
+                    else if (Model.IsStatus == 1)
+                    {
+                        <a class='btn btn-hero btn-info w-100' role='button'
+                           asp-action="TakeExam" asp-route-id="@Model.Id">
+                            Bắt đầu làm bài
+                            <i class='fa fa-angle-right'></i>
+                        </a>
+                    }
+                    else if (Model.IsStatus == 2)
+                    {
+                        <button class='btn btn-hero btn-danger w-100' role='button'>Đã quá thời gian làm bài</button>
+                    }
+                    else if(Model.IsStatus == 3)
+                    {
+                        <a class="btn btn-hero btn-info w-100" asp-action="TakeExam" asp-route-id="@Model.Id">Tiếp tục thi <i class='fa fa-angle-right'></i></a>
+                    }
+                    else if(Model.IsStatus == 4)
+                    {
+                        <button class='btn btn-hero btn-danger w-100' role='button'>Bạn đã hoàn thành bài thi</button>
+                    }
+                </div>
+            </div>
+
+            @if(Model.IsStatus == 4)
+            {
+                
+                <div class="content row justify-content-center align-items-center">
+                    <div class="col-lg-6 col-md-12 p-0">
+                        <a class="fw-bold text-dark" data-bs-toggle="collapse" href="#xemkq" role="button" aria-expanded="false" aria-controls="xemkq">Kết quả bài thi <i class="fa fa-angle-down"></i></a>
+                    </div>
+                </div>
+
+                <div class="collapse" id="xemkq">
+                    <div class="content row justify-content-center align-items-center mb-4">
+                        <div class="col-lg-6 col-md-12 bg-white p-4 rounded">
+                            <h4 class="text-center">Điểm của bạn: <span class="display-6 fw-bold">@Model.TotalScore</span> </h4>
+                            <div class="exam-info mb-3">
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <span class="text-primary"><i class="far fa-clock me-2"></i></span><span>
+                                            Thời gian làm
+                                            bài
+                                        </span>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <span>@Model.TotalWorkTimeInMinutes</span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <span class="text-primary"><i class="far fa-calendar-days me-2"></i></span><span> Thời gian vào thi</span>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <span>@Model.UserStartTime.ToDMYHM()</span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <span class="text-primary"><i class="far fa-circle-check me-2"></i></span><span> Số câu đúng</span>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <span>@Model.TotalCorrectAnswer</span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <span class="text-primary"><i class="far fa-circle-question me-2"></i></span><span> Tổng số câu trong đề</span>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <span>@Model.TotalQuestion</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (Model.SeeAnswer)
+                            {
+                                <button type="button" class="btn btn-hero btn-primary w-100" id="show-exam-detail">Xem chi tiết bài thi</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="modal-show-test" tabindex="-1" role="dialog" aria-labelledby="modal-view-test" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Chi tiết kết quả</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body pb-1">
+                                <div id="content-file">
+
+                                    <div class="question rounded border mb-3">
+                                        <div class="question-top p-3">
+                                            <p class="question-content fw-bold mb-3">
+                                                1. câu hỏi 1 ?
+                                            </p>
+                                            <div class="row">
+                                                <div class="col-6 mb-1">
+                                                    <p class="mb-1">
+                                                        <b>A. </b> Đáp án A
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-6 mb-1">
+                                                    <p class="mb-1">
+                                                        <b>A. </b> Đáp án A
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-6 mb-1">
+                                                    <p class="mb-1">
+                                                        <b>A. </b> Đáp án A
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-6 mb-1">
+                                                    <p class="mb-1">
+                                                        <b>A. </b> Đáp án A
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="test-ans bg-primary rounded-bottom py-2 px-3 d-flex align-items-center">
+                                            <p class="mb-0 text-white me-4">Đáp án của bạn:</p>
+                                            <button class="btn btn-light rounded-pill me-2 btn-answer-question btn-answer-true" for="option-c${index}_${i}">
+                                                A
+                                            </button>
+                                            <button class="btn btn-light rounded-pill me-2 btn-answer-question btn-answer-false" for="option-c${index}_${i}">
+                                                B
+                                            </button>
+                                            <button class="btn btn-light rounded-pill me-2 btn-answer-question ${check}" for="option-c${index}_${i}">
+                                                C
+                                            </button>
+                                            <button class="btn btn-light rounded-pill me-2 btn-answer-question ${check}" for="option-c${index}_${i}">
+                                                D
+                                            </button>
+                                            <span class="h2 mb-0 ms-1"><i class="fa fa-check" style="color:#76BB68;"></i></span>
+                                            <span class="h2 mb-0 ms-1"><i class="fa fa-xmark" style="color:#FF5A5F;"></i></span>
+                                            <span class="mx-2 text-white">
+                                                Đáp án đúng: C
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="question rounded border mb-3">
+                                        <div class="question-top p-3">
+                                            <p class="question-content fw-bold mb-3">
+                                                1. câu hỏi 1 ?
+                                            </p>
+                                            <div class="row">
+                                                <div class="col-6 mb-1">
+                                                    <p class="mb-1">
+                                                        <b>A. </b> Đáp án A
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-6 mb-1">
+                                                    <p class="mb-1">
+                                                        <b>A. </b> Đáp án A
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-6 mb-1">
+                                                    <p class="mb-1">
+                                                        <b>A. </b> Đáp án A
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-6 mb-1">
+                                                    <p class="mb-1">
+                                                        <b>A. </b> Đáp án A
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="test-ans bg-primary rounded-bottom py-2 px-3 d-flex align-items-center">
+                                            <p class="mb-0 text-white me-4">Đáp án của bạn:</p>
+                                            <button class="btn btn-light rounded-pill me-2 btn-answer-question btn-answer-true" for="option-c${index}_${i}">
+                                                A
+                                            </button>
+                                            <button class="btn btn-light rounded-pill me-2 btn-answer-question btn-answer-false" for="option-c${index}_${i}">
+                                                B
+                                            </button>
+                                            <button class="btn btn-light rounded-pill me-2 btn-answer-question ${check}" for="option-c${index}_${i}">
+                                                C
+                                            </button>
+                                            <button class="btn btn-light rounded-pill me-2 btn-answer-question ${check}" for="option-c${index}_${i}">
+                                                D
+                                            </button>
+                                            <span class="h2 mb-0 ms-1"><i class="fa fa-check" style="color:#76BB68;"></i></span>
+                                            <span class="h2 mb-0 ms-1"><i class="fa fa-xmark" style="color:#FF5A5F;"></i></span>
+                                            <span class="mx-2 text-white">
+                                                Đáp án đúng: C
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-sm btn-alt-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+        </div>
+    </div>
+</div>

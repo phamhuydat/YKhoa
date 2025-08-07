@@ -1,0 +1,53 @@
+﻿<div class="modal fade" id="modal-add-subject" tabindex="-1" role="dialog" aria-labelledby="modal-add-subject"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="modal-title text-white" x-text="_modalSetting.title"></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close" id="close-modal"></button>
+            </div>
+
+            <form class="modal-body fs-sm form-add-subject">
+                <div class="mb-3">
+                    <label for="" class="form-label">Mã môn học</label>
+                    <input type="text" class="form-control form-control-alt" name="mamonhoc" id="mamonhoc"
+                           x-model="_updinData.subjectCode" placeholder="Nhập mã môn học">
+                </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Tên môn học</label>
+                    <input type="text" class="form-control form-control-alt" name="tenmonhoc" id="tenmonhoc"
+                           x-model="_updinData.subjectName" placeholder="Nhập tên môn học">
+                </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Tổng số tín chỉ</label>
+                    <input type="number" class="form-control form-control-alt" name="sotinchi" id="sotinchi"
+                           x-model="_updinData.credit" placeholder="Nhập số tín chỉ">
+                </div>
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="" class="form-label">Số tiết lý thuyết</label>
+                            <input type="number" class="form-control form-control-alt" name="sotiet_lt"
+                                   x-model="_updinData.numTheory" id="sotiet_lt" placeholder="Nhập số tiết lý thuyết">
+                        </div>
+                        <div class="col-6">
+                            <label for="" class="form-label">Số tiết thực hành</label>
+                            <input type="number" class="form-control form-control-alt" name="sotiet_th"
+                                   x-model="_updinData.numPractice" id="sotiet_th" placeholder="Nhập số tiết thực hành">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer text-end bg-body align-center">
+                <button type="button" class="btn btn-alt-secondary me-1"
+                        data-bs-dismiss="modal">
+                    Đóng
+                </button>
+                <button type="button" class="btn btn-primary"
+                        id="add_subject" x-text="_modalSetting.primaryButtonText" x-on:click="SaveSubject()">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

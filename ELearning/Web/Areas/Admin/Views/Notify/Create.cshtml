@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewBag.title = "Tạo thông báo";
+}
+
+@section scripts{
+    <script src="~/Adminjs/addNotify.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+}
+
+<div x-data="addNotify">
+    <div class="row">
+        <form class="row g-0 flex-md-grow-1 form-taothongbao">
+            <div class="col-md-12 col-lg-12 order-md-0">
+                <div class="content content-full">
+                    <form class="block block-rounded form-tao-de">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Tạo thông báo</h3>
+                        </div>
+                        <div class="block block-content">
+                            <div class="form-floating mb-4">
+                                <textarea class="form-control" id="name-exam" name="name-exam" x-model="_updinData.content"
+                                          style="height: 100px" row="4" placeholder="Nhập nội dung thông báo"></textarea>
+                                <label class="form-label" for="name-exam">Nội dung thông báo</label>
+                            </div>
+                            <div class="mb-4">
+                                <div class="card card-rounded border">
+                                    <div class="card-header card-header-default">
+                                        <h3 class="card-title">Thông báo cho</h3>
+                                        <div class="card-option">
+                                            <select class="form-select js-select2"
+                                                    x-model="subjectId"
+                                                    id="nhom-hp" name="nhom-hp"
+                                                    @@change="LoadListGroup(subjectId)">
+                                                <option value="" selected>Choose one...</option>
+                                                <template x-for="item in _listSubject">
+                                                    <option :value="item.id" x-text="item.subjectName"></option>
+                                                </template>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body pb-3">
+                                        <div class="row">
+                                            <template x-if="_listGroup.length === 0">
+                                                <div class="text-center fs-sm">
+                                                    <img style="width: 100px"
+                                                         src="~/assets/images/media/empty_data.png" />
+                                                </div>
+                                            </template>
+                                            <template x-for="item in _listGroup" :key="item.id">
+                                                <div class="col-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input select-group-item"
+                                                               type="checkbox" :value="item.id" x-model="_updinData.details">
+                                                        <label class="form-check-label" x-text="item.groupName"></label>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <button type="button"
+                                        x-on:click="SaveNotify()"
+                                        class="btn btn-hero btn-primary" id="btn-send-announcement">
+                                    <i class="fa fa-fw fa-plus me-1"></i>Gửi thông báo
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,10 @@
+﻿@model Web.ViewModels.ExamVM.QuizVM
+
+@foreach (var answer in Model.question.answers)
+{
+	<div class="col-6 mb-1">
+		<input type="checkbox" name="answer" value="@answer.Id">
+		<span>@answer.AnswerContent</span>
+	</div>
+}
+

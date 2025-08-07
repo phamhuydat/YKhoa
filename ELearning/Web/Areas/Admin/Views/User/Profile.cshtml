@@ -1,0 +1,152 @@
+﻿@model Web.Areas.Admin.ViewModels.user.UserAddOrEditVM
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+}
+
+
+@section Scripts {
+    <script type='text/javascript' src='~/assets/libs/flatpickr/flatpickr.min.js'></script>
+}
+
+<div class="position-relative mx-n4 mt-n4">
+    <div class="profile-wid-bg profile-setting-img">
+        <img src="~/assets/images/profile-bg.jpg" class="profile-wid-img" alt="">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xxl-3">
+        <div class="card mt-n5">
+            <div class="card-body p-4">
+                <div class="text-center">
+                    <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
+                        <img src="~/assets/images/users/avatar-1.jpg"
+                             class="rounded-circle avatar-xl img-thumbnail user-profile-image"
+                             alt="user-profile-image">
+                        <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
+                            <input id="profile-img-file-input" type="file"
+                                   class="profile-img-file-input">
+                            <label for="profile-img-file-input"
+                                   class="profile-photo-edit avatar-xs">
+                                <span class="avatar-title rounded-circle bg-light text-body">
+                                    <i class="ri-camera-fill"></i>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <h5 class="mb-1">@Context.User.Identity.Name</h5>
+                    <p class="text-muted mb-0">@Context.User.FindFirst(AppClaimTypes.RoleName)</p>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+    </div>
+
+    <!--end col-->
+    <div class="col-xxl-9">
+        <div class="card mt-xxl-n5">
+            <div class="card-header">
+                <ul class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0"
+                    role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#personalDetails"
+                           role="tab">
+                            <i class="fas fa-home"></i> Thông tin
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#changePassword"
+                           role="tab">
+                            <i class="far fa-user"></i> Đổi mật khẩu
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="card-body p-4">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="personalDetails" role="tabpanel">
+                        <form asp-action="Profile" asp-controller="User" asp-area="Admin">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="firstnameInput" class="form-label">
+                                            Họ và tên
+                                        </label>
+                                        <input type="text" class="form-control"
+                                               id="firstnameInput" asp-for="@Model.FullName"
+                                               placeholder="Enter your firstname">
+                                    </div>
+                                </div>
+                                <!--end col-->
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="JoiningdatInput" class="form-label">
+                                            Ngày sinh
+                                        </label>
+                                        <input type="text" class="form-control"
+                                               data-provider="flatpickr" id="JoiningdatInput"
+                                               data-date-format="d M, Y"
+                                               data-deafult-date="@Model.Birthday"
+                                               asp-for="@Model.Birthday"
+                                               placeholder="Select date" />
+                                    </div>
+                                </div>
+                                <!--end col-->
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="phonenumberInput" class="form-label">
+                                            Số điện thoại
+                                        </label>
+                                        <input type="text" class="form-control"
+                                               id="phonenumberInput"
+                                               asp-for="@Model.Phone"
+                                               placeholder="Enter your phone number">
+                                    </div>
+                                </div>
+                                <!--end col-->
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="emailInput" class="form-label">
+                                            Email
+                                        </label>
+                                        <input type="email" class="form-control" id="emailInput"
+                                                asp-for="@Model.Email"
+                                               placeholder="Enter your email">
+                                    </div>
+                                </div>
+
+                                <!--end col-->
+                                <div class="col-lg-12">
+                                    <div class="hstack gap-2 justify-content-end">
+                                        <button type="submit"
+                                                class="btn btn-primary">
+                                            Cập nhật
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-soft-success">
+                                            Hủy
+                                        </button>
+                                    </div>
+                                </div>
+                                <!--end col-->
+                            </div>
+                            <!--end row-->
+                        </form>
+                    </div>
+                    <!--end tab-pane-->
+                     <partial name="_changePassword" model="null" />
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+    </div>
+    <!--end row-->
+
+</div>
+<!-- container-fluid -->
+
+
+
+
+    

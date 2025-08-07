@@ -1,0 +1,181 @@
+﻿@{
+	ViewBag.Title = "Danh sách bài thi";
+}
+
+@section Scripts {
+	<script src="~/clientjs/client_test.js" asp-append-version="true"></script>
+	<script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+}
+
+<div class="main-content">
+	<div class="page-content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+						<h4 class="mb-sm-0">Danh sách bài thi</h4>
+						<div class="page-title-right">
+							<ol class="breadcrumb m-0">
+								<li class="breadcrumb-item"><a href="javascript: void(0);"></a>Bài thi</li>
+								<li class="breadcrumb-item active">Danh sách</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div x-data="clientTest">
+				<form id="search-form" x-on:submit.prevent="searchTests">
+					<div class="row mb-4">
+						<div class="col-md-6">
+							<div class="input-group">
+								<button class="btn btn-secondary dropdown-toggle btn-filtered-by-state"
+									id="dropdown-filter-state" type="button" data-bs-toggle="dropdown"
+									aria-expanded="false" x-text="filterText">
+									Tất cả
+								</button>
+								<ul class="dropdown-menu mt-1" aria-labelledby="dropdown-filter-state">
+									<li>
+										<a class="dropdown-item filtered-by-state" href="javascript:void(0)"
+											@@click="setFilter(0)">
+											Chưa mở
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item filtered-by-state" href="javascript:void(0)"
+											@@click="setFilter(1)">
+											Đang mở
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item filtered-by-state" href="javascript:void(0)"
+											@@click="setFilter(2)">
+											Đã đóng
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item filtered-by-state" href="javascript:void(0)"
+											@@click="setFilter(3)">
+											Tất cả
+										</a>
+									</li>
+								</ul>
+								<input type="text" class="form-control" id="search-input" name="search-input"
+									placeholder="Tìm kiếm tên bài thi..." x-model="searchQuery">
+							</div>
+						</div>
+					</div>
+				</form>
+
+				<div class="list-test" id="list-test">
+					<template x-for="item in paginatedList" :key="item.id">
+						<div class="card">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="block block-rounded block-fx-pop">
+										<div class="body-content body-content-full border-start border-3"
+											:class="item.isStatus == 0 ? 'border-warning' : item.isStatus == 1 ? 'border-primary' : item.isStatus == 2 ? 'border-danger' : item.isStatus == 3 ? 'border-info' : 'border-success'">
+
+											<div class="d-md-flex justify-content-between align-items-md-center">
+												<div class="p-1 p-md-3">
+													<h3 class="h4 fw-bold mb-3">
+														<a href="" class="text-dark link-fx" x-text="item.examName"></a>
+													</h3>
+													<p class="fs-sm text-muted mb-2">
+														<i class="las la-layer-group me-1"></i>
+														<strong data-bs-toggle="tooltip" data-bs-animation="true"
+															data-bs-placement="top" style="cursor:pointer"
+															x-text="item.subjectName">
+														</strong>
+													</p>
+													<p class="fs-sm text-muted mb-0">
+														<i class="las la-clock me-1"></i> Diễn ra từ <span
+															x-text="formatDateTime(item.startTime)"></span> đến <span
+															x-text="formatDateTime(item.endTime)"></span>
+													</p>
+												</div>
+												<div class="p-1 p-md-3">
+													<template x-if="item.isStatus == 0">
+														<button
+															class="btn btn-outline-warning rounded-pill px-3 me-1 my-1"
+															disabled>Chưa mở</button>
+													</template>
+													<template x-if="item.isStatus == 1">
+														<button
+															class="btn btn-outline-primary rounded-pill px-3 me-1 my-1"
+															disabled>Đang mở</button>
+													</template>
+													<template x-if="item.isStatus == 2">
+														<button
+															class="btn btn-outline-danger rounded-pill px-3 me-1 my-1"
+															disabled>Hết hạn</button>
+													</template>
+
+													<template x-if="item.isStatus == 3">
+														<button class="btn btn-outline-info rounded-pill px-3 me-1 my-1"
+															disabled>Chưa hoàn thành</button>
+													</template>
+													<template x-if="item.isStatus == 4">
+														<button
+															class="btn btn-outline-success rounded-pill px-3 me-1 my-1"
+															disabled>Hoàn thành</button>
+													</template>
+													<a class="btn btn-soft-success rounded-pill px-3 me-1 my-1"
+														:href="`Test/StartTest/${item.id}`">
+														<i class="las la-eye opacity-50 me-1 text-body"></i> Xem chi
+														tiết
+													</a>
+
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+
+						</div>
+
+					</template>
+				</div>
+
+				<template x-if="paginatedList.length != 0">
+					<nav class="pagination-container" aria-label="Page navigation">
+						<ul class="pagination justify-content-end mt-2">
+							<li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+								<a class="page-link" href="javascript:void(0);" @@click="prevPage">
+									<i class="mdi mdi-chevron-left"></i>
+								</a>
+							</li>
+							<template x-for="page in totalPages" :key="page">
+								<li class="page-item" :class="{ 'active': currentPage === page }">
+									<a class="page-link" href="javascript:void(0);" @@click="goToPage(page)"
+										x-text="page"></a>
+								</li>
+							</template>
+							<li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+								<a class="page-link" href="javascript:void(0);" @@click="nextPage">
+									<i class="mdi mdi-chevron-right"></i>
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</template>
+				<template x-if="paginatedList.length == 0">
+					<div class="noresult">
+						<div class="text-center">
+							<lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
+								colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon>
+							<h5 class="mt-2">Xin lỗi! không tìm thấy</h5>
+							<p class="text-muted mb-0">
+								hãy nhập lại tên mà bạn muốn tìm kiếm
+							</p>
+						</div>
+					</div>
+				</template>
+			</div>
+		</div>
+	</div>
+</div>

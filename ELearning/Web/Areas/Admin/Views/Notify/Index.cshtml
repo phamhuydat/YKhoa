@@ -1,0 +1,99 @@
+﻿@model IEnumerable<Web.Areas.Admin.ViewModels.NotifyVM.ListNoifyVM>
+
+@{
+    ViewBag.Title = "Danh sách thông báo";
+
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div id="customerList">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row g-4 mb-3">
+
+                        @if (User.IsInPermission(AuthConst.AppNotification.CREATE))
+                        {
+                            <div class="col-sm-auto">
+                                <div>
+                                    <a class="btn btn-primary" asp-action="Create" asp-controller="Notify" asp-area="Admin">
+                                        <i class="ri-add-line align-bottom me-1"></i> TẠO THÔNG BÁO
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="col-sm">
+                            <div class="d-flex justify-content-sm-end">
+                                <div class="search-box ms-2">
+                                    <input type="text" class="form-control search"
+                                           placeholder="Search...">
+                                    <i class="ri-search-line search-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @foreach (var item in Model)
+            {
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="block block-rounded block-fx-pop mb-2">
+                                <div class="block-content block-content-full">
+                                    <div class="d-md-flex justify-content-md-between align-items-md-center">
+                                        <div class="p-1 p-md-3">
+                                            <h3 class="h4 fw-bold mb-3">
+                                                Nội dung: 
+                                                <a href="javascript:void(0)"class="text-dark link-fx">@item.Content</a>
+                                            </h3>
+                                            <p class="text-muted mb-2 text-dark">
+                                                <i class="las la-layer-group me-1"></i>
+                                                Giao cho học phần
+                                                <strong style="cursor:pointer">
+                                                    @item.ListGroup
+                                                </strong>
+                                            </p>
+                                            <p class="text-muted mb-0">
+                                                <i class="la la-clock me-1"></i> Ngày tạo <span>@item.CreateDate.ToDMYHM()</span>
+                                            </p>
+                                        </div>
+
+                                        <div class="p-1 p-md-3">
+                                            @if (User.IsInPermission(AuthConst.AppNotification.UPDATE))
+                                            {
+                                                <a class="btn btn-soft-primary rounded-pill px-3 me-1 my-1"
+                                                   asp-action="" asp-controller="" asp-area="Admin" asp-route-id="@item.Id">
+                                                    <i class="la la-wrench opacity-50 me-1"></i> Chỉnh sửa
+                                                </a>
+                                            }
+                                            @if (User.IsInPermission(AuthConst.AppNotification.DELETE))
+                                            {
+                                                <a class="btn btn-soft-danger rounded-pill px-3 my-1 btn-delete"
+                                                   asp-action="" asp-controller="" asp-area="Admin" asp-route-id="@item.Id"
+                                                   data-id=@item.Id>
+                                                    <i class="la la-times opacity-50 me-1"></i> Xoá đề
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <partial name="_pagedList" />
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+

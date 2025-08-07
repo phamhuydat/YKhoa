@@ -1,0 +1,80 @@
+﻿<div class="modal fade" id="modal-chapter" tabindex="-1" role="dialog" aria-labelledby="modal-chapter"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Danh sách chương</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pb-1">
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th>Tên chương</th>
+                                <th class="text-center col-header-action">Hành động</th>
+                            </tr>
+                        </thead>
+                        <template x-for="item in _listChapter">
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" scope="row" x-text="item.rowIndex"></td>
+                                    <td x-text="item.chapterName"></td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-alt-secondary btn-edit-option"
+                                                    data-bs-toggle="tooltip" title="edit"
+                                                    x-on:click="OpenModalEditChapter(item.id)">
+                                                <i class="ri-edit-2-line"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-alt-secondary btn-delete-option"
+                                                    data-bs-toggle="tooltip" title="delete"
+                                                    x-on:click="DeleteChapter(item.id)">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </table>
+                </div>
+                <div class="block block-rounded mb-3">
+                    <div class="block-content pb-3">
+                        <a data-role="chuong" data-action="create" class="fw-bold btn btn-soft-primary" 
+                            data-bs-toggle="collapse" href="#collapseChapter" role="button"
+                            aria-expanded="false" aria-controls="collapseChapter" >
+                            <i class="ri-add-line align-bottom me-1"></i>Thêm chương
+                        </a>
+                        <div class="collapse" id="collapseChapter">
+                            <form class="mt-2 form-chapter">
+                                <div class="row mb-1">
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" x-model="_dataChapter.chapterName"
+                                               id="name_chapter" placeholder="Nhập tên chương">
+                                    </div>
+                                    <div class="col-4">
+                                        <input type="hidden"  id="mamon_chuong" x-model="_dataChapter.subjectId">
+                                        
+                                        <button type="button" class="btn btn-primary" 
+                                            x-text="_modalSettingChapter.primaryButtonText"
+                                                x-on:click="SaveChapter()">
+                                        </button>
+
+                                        <button type="button" class="btn btn-secondary close-chapter">
+                                            Huỷ             
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>

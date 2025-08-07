@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none"
+	  data-preloader="disable">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="shortcut icon" href="~/edu.ico">
+	<title>@ViewBag.Title</title>
+
+	<!-- Google Font: Source Sans Pro -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	<!-- Font Awesome -->
+	<link href="~/assets/libs/fullcalendar/main.min.css" rel="stylesheet" asp-append-version="true" />
+
+	<!-- Layout config Js -->
+	<script src="~/assets/js/layout.js"></script>
+	<!-- Bootstrap Css -->
+	<link href="~/assets/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+	<!-- Icons Css -->
+	<link href="~/assets/css/icons.min.css" rel="stylesheet" asp-append-version="true" />
+	<!-- App Css-->
+    <link href="~/assets/css/app.min.css" rel="stylesheet" asp-append-version="true" />
+
+    <link href="~/lib/bootstrap-notify/css/bootstrap-notify.css" rel="stylesheet" />
+
+	<link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+
+	<!-- custom Css-->
+	<link href="~/assets/css/custom.css" rel="stylesheet" asp-append-version="true" />
+
+	@RenderSection("head", false)
+</head>
+<body>
+	<!-- Site wrapper -->
+	<div id="layout-wrapper">
+
+		<partial name="_HeaderBar" />
+
+		<vc:main-nav-bar></vc:main-nav-bar>
+		<!-- ============================================================== -->
+		<!-- Start right Content here -->
+		<!-- ============================================================== -->
+		<div class="main-content">
+			<!-- Main content -->
+			<div class="page-content">
+				<div class="container-fluid">
+@* 					<div class="row">
+						<div class="col-12">
+							<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+								<h4 class="mb-sm-0">User</h4>
+
+								<div class="page-title-right">
+									<ol class="breadcrumb m-0">
+										<li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
+										<li class="breadcrumb-item active">Listjs</li>
+									</ol>
+								</div>
+							</div>
+						</div>
+					</div> *@
+
+					@RenderBody()
+				</div>
+
+			</div>
+
+		</div>
+		<!-- /.content-wrapper -->
+	</div>
+
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+	<script src="~/assets/libs/node-waves/waves.min.js"></script>
+	<script src="~/assets/libs/feather-icons/feather.min.js"></script>
+	<script src="~/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
+    <script src="~/lib/select2/js/select2.full.min.js"></script>
+	<!-- apexcharts -->
+	<script src="~/assets/libs/apexcharts/apexcharts.min.js"></script>
+
+	<!-- Javascript dùng chung -->
+	<script src="~/assets/js/site.js" asp-append-version="true"></script>
+	
+	@RenderSection("scripts", false)
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/bootstrap-notify/js/bootstrap-notify.js"></script>
+	<script type="text/javascript" src="@Url.Content("~/assets/libs/choices.js/public/assets/scripts/choices.min.js")"></script>
+	<script type="text/javascript" src="@Url.Content("~/assets/libs/flatpickr/flatpickr.min.js")"></script>
+	<script src="~/assets/js/app.js"></script>
+	<script defer src="~/lib/alpinejs/cdn.js"></script>
+
+	<script>
+		flatpickr("#datepicker", {
+			//locale: "vi",
+			altInput: true,
+			altFormat: "d-m-Y",       // Định dạng hiển thị cho người dùng
+			dateFormat: "Y-m-d"        // Định dạng gửi lên server để ASP.NET nhận diện
+		});
+
+		flatpickr("#time-start", {
+			enableTime: true,
+			dateFormat: "Y-m-d\\TH:i:S",
+			time_24hr: true
+		});
+
+		flatpickr("#time-end", {
+			enableTime: true,
+			dateFormat: "Y-m-d\\TH:i:S",
+			time_24hr: true
+		});
+	</script>
+</body>
+</html>

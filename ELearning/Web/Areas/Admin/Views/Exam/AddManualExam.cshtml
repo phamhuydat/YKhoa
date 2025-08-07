@@ -1,0 +1,160 @@
+﻿@using Web.Areas.Admin.ViewModels.PagerVM
+@{
+    ViewBag.Title = "Thêm câu hỏi thủ công";
+}
+
+@section scripts {
+    <script src="~/AdminJs/addQuestionManually.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+}
+
+<div x-data="addQuestion">
+    <div class="row">
+        <div class="col-lg-5 h100-scroll">
+            <div class="card">
+                <div class="card-body">
+                    <div id="side-content" class="d-none d-lg-block push">
+                        <form id="search-form" onsubmit="return false;">
+                            <div class="mb-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="search-input" x-model="searchQuery"
+                                           placeholder="Tìm kiếm câu hỏi...">
+                                    <span class="input-group-text">
+                                        <i class="las la-search"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                        <!--Danh sach cau hoi-->
+                        <div class="d-flex justify-content-between mb-2">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" 
+                                        type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"
+                                        x-on:click="LoadChapter()">
+                                    Chương
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <template x-for="chapter in _listChapter">
+                                        <a class="dropdown-item" x-text="chapter.chapterName" @@click=" selectedChapter=chapter.id"></a>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Độ khó
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" @@click="selectedDifficulty = ''">Tất cả</a>
+                                    <a class="dropdown-item" @@click="selectedDifficulty = '1'">Dễ</a>
+                                    <a class="dropdown-item" @@click="selectedDifficulty = '2'">Trung bình</a>
+                                    <a class="dropdown-item" @@click="selectedDifficulty = '3'">Khó</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group fs-sm mb-3" id="list-question">
+
+                            <template x-for="item in _dataFilterQuestion">
+                                <div class="list-group-item d-flex">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" :checked="isQuestionInExam(item.id)" @@change="isQuestionInExam(item.id) ? removeQuestionFromExam(item.id) : addQuestionToExam(item)">
+                                        <label class="form-check-label text-muted"
+                                               x-html="item.content"
+                                               style="word-break: break-all;">
+                                        </label>
+                                    </div>
+                                    <span class="badge rounded-pill bg-dark m-1 float-end h-100" x-text="getDifficultyLevel(item.level)">
+                                    </span>
+                                </div>
+                            </template>
+                        </div>
+                        <partial name="../Shared/_Pager"/>
+                    </div>                                                                               
+                </div>
+            </div>
+        </div>
+
+        <!--chi tie bai thi-->
+        <div class="col-lg-7 h100-scroll">
+            <div class="px-0">
+                <div class="card card-rounded">
+                    <div class="card-body card-body-sm card-body-full bg-body-light">
+                        <div class="d-flex py-3 align-items-center">
+                            <div class="flex-shrink-0 me-3 ms-2 overlay-container overlay-right">
+                                <p class="mb-0">Số lượng: </p>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <button type="button" class="btn btn-soft-primary">
+                                            Dễ
+                                            <span class="badge rounded-pill ms-1 text-black">
+                                                <span id="slcaude">0</span>
+                                                /
+                                                <span id="ttcaude">0</span>
+                                            </span>
+                                        </button>
+
+                                        <button type="button" class="btn btn-soft-primary ">
+                                            Trung bình
+                                            <span class="badge rounded-pill bg-xwork ms-1 text-black">
+                                                <span id="slcautb">0</span>
+                                                /
+                                                <span id="ttcautb">0</span>
+                                            </span>
+                                        </button>
+
+                                        <button type="button" class="btn btn-soft-primary">
+                                            Khó
+                                            <span class="badge rounded-pill bg-xwork ms-1 text-black">
+                                                <span id="slcaukho">0</span>
+                                                /
+                                                <span id="ttcaukho">0</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-hero btn-danger" x-on:click="saveExamDetail()">
+                                            <i class="las-solid las la-save"></i> Tạo đề thi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="text-center mb-2" id="name-test"></h4>
+                        <p class="text-center text-muted">Thời gian: <span id="test-time"></span> phút</p>
+                        <div id="list-question-of-test">
+                            <template x-for="(item, index) in _listQuestionInExam">
+                                <div class="question mb-3 d-flex justify-content-between">
+                                    <div class="question-top px-3">
+                                        <div class="d-flex">
+                                            <b x-text="index + 1 + '.' "></b>&nbsp;
+                                            <p class="question-content fw-bold mb-3" x-html="item.content"></p>
+                                        </div>
+                                        <div class="row">
+                                            <template x-for="(answer, index) in item.answers">
+                                                <div class="col-12 mb-1">
+                                                    <p class="mb-1 d-flex">
+                                                        <b x-text="String.fromCharCode(65 + index) + ') '"></b> 
+                                                        &nbsp;
+                                                        <span class="d-flex" x-html="answer.answerContent"></span>
+                                                    </p>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group-vertical btn-sm h-50" role="group">
+                                        <button type="button" class="btn btn-sm btn-info btn-up" @@click="moveQuestionUp(index)" data-bs-toggle="tooltip" data-bs-placement="left" title="Đưa lên trên"><i class="las la-arrow-up"></i></button>
+                                        <button type="button" class="btn btn-sm btn-info btn-down" @@click="moveQuestionDown(index)" data-bs-toggle="tooltip" data-bs-placement="left" title="Đưa xuống dưới"><i class="las la-arrow-down"></i></button>
+                                        <button type="button" class="btn btn-sm btn-info btn-delete" @@click="removeQuestionFromExam(item.id)" data-bs-toggle="tooltip" data-bs-placement="left" title="Xoá câu hỏi"><i class="ri-delete-back-2-fill"></i></button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

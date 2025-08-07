@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Nhóm học phần";
+}
+@section head {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
+}
+
+@section scripts {
+    <script src="~/assets/libs/list.pagination.js/list.pagination.min.js"></script>
+    <script src="~/AdminJs/group.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
+}
+
+<div x-data="groups">
+    <div class="row g-4 mb-3">
+        <div class="col-sm-auto">
+            <div>
+                <button class="btn btn-primary"
+                        x-on:click="OpenModalAdd()">
+                    <i class="ri-add-line align-bottom me-1"></i>
+                    Thêm nhóm
+                </button>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="d-flex justify-content-sm-end gap-2">
+                <div class="search-box ms-2">
+                    <input type="text" class="form-control" placeholder="Search...">
+                    <i class="ri-search-line search-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <template x-for="groups in _listGroups" :key="groups.id">
+            <div class="groups">
+                <div class="align-items-center d-flex justify-content-between mt-2">
+                    <h3 class="mb-sm-0" style="border-bottom: 1px solid #dfe4f1" id="0">
+                        <span x-text="groups.title"></span>
+                    </h3>
+                    <button style="display: none;"></button>
+                </div>
+
+                <div class="row">
+                    <template x-for="item in groups.listItemGroup">
+                        <!-- end col -->
+                        <div class="col-xxl-3 col-sm-4 project-card mt-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="p-3 mt-n3 mx-n3 bg-soft-info">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-0 fs-15" x-text="item.name"></h5>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <div class="d-flex gap-1 align-items-center my-n2">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-link text-muted p-1 mt-n1 py-0 text-decoration-none fs-15"
+                                                                data-bs-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="true">
+                                                            <i data-feather="more-horizontal" class="las la-ellipsis-h"></i>
+                                                        </button>
+
+                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                            <button class="dropdown-item" 
+                                                                    x-on:click="OpenListStudent(item.id)">
+                                                                <i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                                                                Danh sách sinh viên
+                                                            </button>
+                                                            <a class="dropdown-item" x-on:click="OpenModalEdit(item.id)">
+                                                                <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
+                                                                Sửa thông tin
+                                                            </a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                                data-bs-target="#removeProjectModal">
+                                                                <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
+                                                                Xóa nhóm
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="py-3">
+                                        <div class="row gy-3">
+                                            <div class="col-6">
+                                                <div>
+                                                    <p class="text-muted mb-1">Thời gian</p>
+                                                    <div class="fs-16" x-text="item.notes"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div>
+                                                    <p class="text-muted mb-1">Sỉ số</p>
+                                                    <h5 class="fs-16" x-text="item.quantity"></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- end card body -->
+                            </div>
+                            <!-- end card -->
+                        </div>
+                        <!-- end col -->
+                    </template>
+                </div>
+            </div>
+
+        </template>
+    </div>
+
+    <partial name="_modalAddOrEdit" />
+</div>

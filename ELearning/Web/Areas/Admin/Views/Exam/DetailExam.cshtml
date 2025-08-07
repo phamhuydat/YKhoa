@@ -1,0 +1,380 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách bài đã thi";
+}
+@section scripts {
+    <script src="~/assets/js/pages/dashboard-analytics.init.js"></script>
+    <script src="~/assets/libs/list.pagination.js/list.pagination.min.js"></script>
+    <script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+    <script src="~/AdminJs/detailExam.js" asp-append-version="true"></script>
+}
+
+<div x-data="detailExam">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="content content-full">
+                <div class="card block-rounded">
+                    <ul class="nav nav-tabs nav-tabs-custom nav-primary nav-justified mb-3 align-items-center" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="bang-diem-tab" data-bs-toggle="tab" data-bs-target="#bang-diem"
+                                    role="tab" aria-controls="bang-diem" aria-selected="true">
+                                Bảng điểm
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="thong-ke-tab" data-bs-toggle="tab" data-bs-target="#thong-ke"
+                                    role="tab" aria-controls="thong-ke" aria-selected="false">
+                                Thống kê
+                            </button>
+                        </li>
+                        <li class="nav-item ms-auto">
+                            <div class="card-options ps-3 pe-2">
+                                <button type="button" class="btn btn-ghost-primary" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasSetting" aria-controls="offcanvasSetting">
+                                    <i class="las la-info-circle"></i>
+                                </button>
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Chỉnh sửa đề thi"
+                                   class="btn btn-ghost-primary">
+                                    <i class="las la-pen"></i>
+                                </a>
+                                <button data-bs-toggle="tooltip" data-bs-placement="top" title="Toàn màn hình" type="button"
+                                        class="btn btn-ghost-primary" data-toggle="block-option"
+                                        data-action="fullscreen_toggle">
+                                    <i class=" las la-expand-arrows-alt"></i>
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="card-body tab-content">
+                        <div class="tab-pane active" id="bang-diem" role="tabpanel" aria-labelledby="bang-diem-tab"
+                             tabindex="0">
+                            <form method="POST" id="search-form">
+                                <div class="row mb-4">
+                                    <div class="input-group">
+                                        <div class="col-md-6 d-flex gap-3">
+                                            <button class="btn btn-soft-secondary dropdown-toggle btn-filtered-by-group"
+                                                    id="dropdown-filter-group" type="button" data-bs-toggle="dropdown"
+                                                    aria-expanded="false" x-text="groupId === 0 ? 'Tất cả' : groupName">
+                                            </button>
+                                            <ul class="dropdown-menu mt-1" aria-labelledby="dropdown-filter-group">
+                                                <template x-for="group in groups" :key="group.id">
+                                                    <li>
+                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                           @@click="setGroupId(group.id)" x-text="group.groupName"></a>
+                                                    </li>
+                                                </template>
+                                            </ul>
+
+                                            <button class="btn btn-soft-secondary dropdown-toggle btn-filtered-by-state"
+                                                    id="dropdown-filter-state" type="button" data-bs-toggle="dropdown"
+                                                    aria-expanded="false" x-text="status === 0 ? 'Tất cả' : status === 1 ? 'Đã nộp bài' : status === 2 ? 'Vắng thi' : 'Chưa nộp bài'">
+                                            </button>
+                                            <ul class="dropdown-menu mt-1" aria-labelledby="dropdown-filter-state">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0)"
+                                                       @@click="setStatus(0)">Tất cả</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0)"
+                                                       @@click="setStatus(1)">Đã nộp bài</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0)"
+                                                       @@click="setStatus(2)">Vắng thi</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0)"
+                                                       @@click="setStatus(3)">Chưa nộp bài</a>
+                                                </li>
+                                            </ul>
+                                            <input type="text" class="form-control form-control-alt" id="search-input"
+                                                   name="search-input" placeholder="Tìm kiếm sinh viên..." @@input="setSearch($event.target.value)">
+                                        </div>
+                                        <div class="col-md-6 d-flex justify-content-end">
+                                            <button type="button" class="btn btn-hero btn-primary btn-sm" id="export_excel">
+                                                <i class="fa-solid fa-file me-1"></i>Xuất bảng
+                                                điểm
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table table-vcenter">
+                                    <thead>
+                                        <tr class="table-col-title">
+                                            <th class="text-center col-sort" data-sort-column="manguoidung"
+                                                data-sort-order="default">MSSV</th>
+                                            <th class="col-sort" data-sort-column="hoten" data-sort-order="default">Họ tên</th>
+                                            <th class="text-center col-sort" data-sort-column="diemthi"
+                                                data-sort-order="default">Điểm</th>
+                                            <th class="text-center col-sort" data-sort-column="thoigianvaothi"
+                                                data-sort-order="default">Thời gian vào thi</th>
+                                            <th class="text-center col-sort" data-sort-column="thoigianlambai"
+                                                data-sort-order="default">Thời gian thi</th>
+                                            <th class="text-center col-sort" data-sort-column="solanchuyentab"
+                                                data-sort-order="default">Số lần thoát</th>
+                                            <th class="text-center">Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="took_the_exam">
+
+                                        <template x-for="item in paginatedList">
+                                            <tr>
+                                                <td class="text-center" x-text="item.mssv"></td>
+                                                <td class="fs-sm d-flex align-items-center">
+                                                    <div class="d-flex flex-column">
+                                                        <strong class="text-primary" x-text="item.fullName"></strong>
+                                                        <span class="fw-normal fs-sm text-muted" x-text="item.email">
+                                                            
+                                                        </span>
+                                                    </div>
+                                                </td>
+
+                                                <td class="text-center" x-text="item.testScores"></td>
+                                                <td class="text-center" x-text="formatDateTime(item.startTime)">
+                                                    
+                                                </td>
+                                                <td class="text-center" x-text="formatTime(item.totalWorkingTime)"></td>
+                                                <td class="text-center" x-text="item.numTSC"></td>
+                                                <td class="text-center">
+                                                    <a class="btn btn-sm btn-soft-secondary" href="javascript:void(0)"
+                                                       data-bs-toggle="tooltip" aria-label="Xem chi tiết" 
+                                                       data-bs-original-title="Xem chi tiết"
+                                                        x-on:click="ShowTakeExam(item.id)">
+                                                        <i class="las la-eye"></i>
+                                                    </a>
+                                                    <a class="btn btn-sm btn-soft-secondary print-pdf" 
+                                                        href="javascript:void(0)"
+                                                        x-on:click="print_pdf(item.id)">
+                                                        <i class="las la-print"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            
+                            <template x-if="paginatedList.length != 0">
+                                <nav class="pagination-container" aria-label="Page navigation">
+                                    <ul class="pagination justify-content-end mt-2">
+                                        <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                                            <a class="page-link" href="javascript:void(0);" @@click="prevPage">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                        <template x-for="page in totalPages" :key="page">
+                                            <li class="page-item" :class="{ 'active': currentPage === page }">
+                                                <a class="page-link" href="javascript:void(0);" @@click="goToPage(page)" x-text="page"></a>
+                                            </li>
+                                        </template>
+                                        <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                                            <a class="page-link" href="javascript:void(0);" @@click="nextPage">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </template>            
+
+                            <template x-if="paginatedList.length == 0">
+                                <div class="noresult">
+                                    <div class="text-center">
+                                        <lord-icon src="https://cdn.lordicon.com/msoeawqm.json"
+                                                   trigger="loop" colors="primary:#121331,secondary:#08a88a"
+                                                   style="width:75px;height:75px"></lord-icon>
+                                        <h5 class="mt-2">Xin lỗi! không tìm thấy</h5>
+                                        <p class="text-muted mb-0">
+                                            hãy nhập lại tên mà bạn muốn tìm kiếm
+                                        </p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+
+                        <div class="tab-pane" id="thong-ke" role="tabpanel" aria-labelledby="thong-ke-tab" tabindex="0">
+                            <div class="row mt-5">
+                                <div class="col-md-6 col-xl-3">
+                                    <div class="card card-rounded card-fx-shadow">
+                                        <div class="card-body card-body-full d-flex item-center justify-content-between">
+                                            <div class="me-3">
+                                                <p class="fs-lg fw-semibold mb-0" x-text="studentSuccess"></p>
+                                                <p class="text-muted mb-0">Thí sinh đã nộp</p>
+                                            </div>
+                                            <div class="item item-circle bg-body-light">
+                                                <i class="las la-user-edit text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-3">
+                                    <div class="card card-rounded block-fx-shadow">
+                                        <div class="card-body card-body-full d-flex align-items-center justify-content-between">
+                                            <div class="me-3">
+                                                <p class="fs-lg fw-semibold mb-0" x-text="studentDoing"></p>
+                                                <p class="text-muted mb-0">Thí sinh chưa nộp</p>
+                                            </div>
+                                            <div class="item item-circle bg-body-light">
+                                                <i class="las la-pencil-alt text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-3">
+                                    <div class="card card-rounded card-fx-shadow">
+                                        <div class="card-body card-body-full d-flex align-items-center justify-content-between">
+                                            <div class="me-3">
+                                                <p class="fs-lg fw-semibold mb-0" x-text="studentNotDo"></p>
+                                                <p class="text-muted mb-0">Thí sinh không thi</p>
+                                            </div>
+                                            <div class="item item-circle bg-body-light">
+                                                <i class="ri-user-unfollow-fill text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-3">
+                                    <div class="card card-rounded card-fx-shadow">
+                                        <div class="card-body card-body-full d-flex align-items-center justify-content-between">
+                                            <div class="me-3">
+                                                <p class="fs-lg fw-semibold mb-0" x-text="averageScore"></p>
+                                                <p class="text-muted mb-0">Điểm trung bình</p>
+                                            </div>
+                                            <div class="item item-circle bg-body-light">
+                                                <i class="ri-medium-fill text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-0 pb-2">
+                                <div>
+                                    <div id="audiences_metrics_charts"
+                                         data-colors='["--vz-secondary", "--vz-gray-200"]' class="apex-charts"
+                                         dir="ltr"></div>
+                                </div>
+                            </div><!-- end card body -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+     @* modal chi tiết bài thi của học sinh *@ 
+
+    <div class="modal fade" id="modal-show-test" tabindex="-1" role="dialog" aria-labelledby="modal-cau-hoi"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết kết quả</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pb-1">
+                    <div id="content-file">
+                        <template x-for="(item, index) in _resultDetails">
+                            <div class="question rounded border mb-3">
+                                <div class="question-top p-3">
+                                    <p class="question-content fw-bold mb-3" x-text="index + 1 + '. ' + item.content">
+                                    </p>
+                                    <div class="row">
+                                        <template x-for="(answer, index) in item.answers">
+                                            <div class="col-6 mb-1">
+                                                <b x-text="String.fromCharCode(65 + index)"></b>
+                                                <span x-text="answer.answerContent"></span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <div class="test-ans bg-primary rounded-bottom py-2 px-3 d-flex align-items-center">
+                                    <p class="mb-0 text-white me-4">Đáp án của bạn:</p>
+                                    <template x-for="(answer, index) in item.answers">
+
+                                        <button class="btn rounded-pill me-2 btn-answer-question"
+                                                x-bind:class="{'btn-success': answer.isCorrect == 1,
+                                                'btn-danger': answer.isCorrect == 0,
+                                                'btn-light': answer.isCorrect == null }"
+                                                x-text="String.fromCharCode(65 + index)">
+                                        </button>
+                                    </template>
+
+                                    <template x-if="item.check">
+                                        <span class="h2 mb-0 ms-1">
+                                            <i class="las la-check" style="color:#76BB68;"></i>
+                                        </span>
+                                    </template>
+
+                                    <template x-if="!item.check">
+                                        <span class="h2 mb-0 ms-1">
+                                            <i class=" las la-times" style="color:#FF5A5F;"></i>
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-alt-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSetting" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header border-bottom">
+        <h4 class="offcanvas-title" id="offcanvasRightLabel">Tên đề</h4>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0 overflow-hidden">
+        <div class="acitivity-timeline p-4">
+            <h5 class="mb-3">THÔNG TIN ĐỀ THI</h5>
+            <ul class="list-unstyled text-dark fs-sm">
+                <li class="mb-1 fs-base">
+                    <i class="text-primary fa fa-file-signature me-2"></i><span>
+                        Tên đề: tên đề
+                    </span>
+                </li>
+                <li class="mb-1 fs-base">
+                    <i class="text-primary fa fa-clock me-2"></i><span>
+                        Thời gian tạo: 9234
+                    </span>
+                </li>
+            </ul>
+            <h5 class="mb-3">MÔN THI</h5>
+            <p class="mb-3">Tên môn thi</p>
+            <h5 class="mb-3">GIAO CHO</h5>
+            <ul class="nav nav-pills nav-justified push">
+
+                <li class="nav-item me-1 mb-2">
+                    <a class="nav-link border text-muted"> nhom 1</a>
+                </li>
+                <li class="nav-item me-1 mb-2">
+                    <a class="nav-link border text-muted"> nhom21</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="offcanvas-foorter border p-3 text-center">
+        <a href="javascript:void(0);" class="link-success">Chi tiết bài thi 
+            <i class="ri-arrow-right-s-line align-middle ms-1"></i>
+        </a>
+    </div>
+</div>
+
+
+
