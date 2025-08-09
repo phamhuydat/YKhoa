@@ -1,177 +1,178 @@
 ﻿@{
-    ViewBag.Title = "Tạo đề thi";
+	ViewBag.Title = "Tạo đề thi";
 }
 
 
 @section scripts{
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
-    <script src="~/AdminJs/addExam.js" asp-append-version="true" ></script>
-    <script src="~/assets/libs/prismjs/prism.js"></script>
-    <script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<script src="~/AdminJs/addExam.js" asp-append-version="true" ></script>
+	<script src="~/assets/libs/prismjs/prism.js"></script>
+	<script src="~/lib/bootstrap-notify/bootstrap-notify.min.js"></script>
 }
 
 <div x-data="AddExam">
-    <div class="row">
-        <div class="col-lg-8 order-first">
-            <div class="card">
-                <form class="form-add-Exam">
-                    <div class="card-header">
-                        <h3 class="card-title">Thêm đề thi</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-4">
-                            <label class="form-label" for="name-exam">Tên đề kiểm tra</label>
-                            <input type="text" class="form-control" id="name-exam" name="name-exam"
-                                x-model="_updinData.title"
-                                    placeholder="Nhập tên đề kiểm tra">
-                        </div>
+	<div class="row">
+		<div class="col-lg-8 order-first">
+			<div class="card">
+				<form class="form-add-Exam">
+					<div class="card-header">
+						<h3 class="card-title">Thêm đề thi</h3>
+					</div>
+					<div class="card-body">
+						<div class="mb-4">
+							<label class="form-label" for="name-exam">Tên đề kiểm tra</label>
+							<input type="text" class="form-control" id="name-exam" name="name-exam"
+								x-model="_updinData.title"
+									placeholder="Nhập tên đề kiểm tra">
+						</div>
 
-                        <div class="row mb-4">
-                            <div class="col-xl-6">
-                                <label class="form-label" for="time-start">
-                                    Thời gian bắt đầu
-                                </label>
-                                <input type="text" class="form-control"
-                                       data-provider="flatpickr" data-date-format="d-m-y H:i"
-                                       data-enable-time
-                                       id="time-start"
-                                       name="time-start"
-                                       x-model="_updinData.timeStart"
-                                       placeholder="Từ">
-                            </div>
+						<div class="row mb-4">
+							<div class="col-xl-6">
+								<label class="form-label" for="time-start">
+									Thời gian bắt đầu
+								</label>
+								<input type="text" class="form-control"
+									   data-provider="flatpickr" data-date-format="d-m-y H:i"
+									   data-enable-time
+									   id="time-start"
+									   name="time-start"
+									   x-model="_updinData.timeStart"
+									   placeholder="Từ">
+							</div>
 
-                            <div class="col-xl-6">
-                                <label class="form-label">Thời gian kết thúc</label>
-                                <input type="text" class="form-control"
-                                       data-provider="flatpickr" data-date-format="d-m-y H:i"
-                                       data-enable-time
-                                       id="time-end"
-                                       name="time-end"
-                                       x-model="_updinData.timeEnd"
-                                       placeholder="Đến">
-                            </div>
-                        </div>
+							<div class="col-xl-6">
+								<label class="form-label">Thời gian kết thúc</label>
+								<input type="text" class="form-control"
+									   data-provider="flatpickr" data-date-format="d-m-y H:i"
+									   data-enable-time
+									   id="time-end"
+									   name="time-end"
+									   x-model="_updinData.timeEnd"
+									   placeholder="Đến">
+							</div>
+						</div>
 
-                        <div class="mb-4">
-                            <div class="input-group">
-                                <span class="input-group-text">Thời gian làm bài</span>
-                                <input type="number" class="form-control text-center"
-                                       id="exam-time"
-                                       name="exam-time"
-                                       x-model="_updinData.workTime">
-                                <span class="input-group-text">phút</span>
-                            </div>
-                        </div>
+						<div class="mb-4">
+							<div class="input-group">
+								<span class="input-group-text">Thời gian làm bài</span>
+								<input type="number" class="form-control text-center"
+									   id="exam-time"
+									   name="exam-time"
+									   x-model="_updinData.workTime">
+								<span class="input-group-text">phút</span>
+							</div>
+						</div>
 
-                        <div class="mb-4">
-                            <div class="card card-rounded border">
-                                <div class="card-header">
-                                    <h3 class="card-title">Học phần</h3>
-                                    <div class="card-option">
-                                        <select class="form-select js-select2"
-                                                x-model="_updinData.subjectId"
-                                                id="nhom-hp" name="nhom-hp"
-                                                @@change="LoadChapter(); LoadListGroup(_updinData.subjectId)">
-                                            <option value="" selected>Choose one...</option>
-                                            <template x-for="item in _listSubject">
-                                                <option :value="item.id" x-text="item.subjectName"></option>
-                                            </template>
-                                        </select>
-                                    </div>
-                                </div>
+						<div class="mb-4">
+							<div class="card card-rounded border">
+								<div class="card-header">
+									<h3 class="card-title">Học phần</h3>
+									<div class="card-option">
+										<select class="form-select js-select2"
+												x-model="_updinData.subjectId"
+												id="nhom-hp" name="nhom-hp"
+												@@change="LoadChapter(); LoadListGroup(_updinData.subjectId)">
+											<option value="" selected>Choose one...</option>
+											<template x-for="item in _listSubject">
+												<option :value="item.id" x-text="item.subjectName"></option>
+											</template>
+										</select>
+									</div>
+								</div>
 
-                                <div class="card-body pb-3">
-                                    <div class="row">
-                                        <template x-if="_listGroup.length === 0">
-                                            <div class="text-center fs-sm">
-                                                <img style="width: 100px" 
-                                                    src="~/assets/images/media/empty_data.png" />
-                                            </div>
-                                        </template>
-                                        <template x-for="item in _listGroup" :key="item.id">
-                                            <div class="col-4">
-                                                <div class="form-check">
-                                                    <input class="form-check-input select-group-item" 
-                                                            type="checkbox" :value="item.id" x-model="_updinData.groupId">
-                                                    <label class="form-check-label" x-text="item.groupName"></label>
-                                                </div>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+								<div class="card-body pb-3">
+									<div class="row">
+										<template x-if="_listGroup.length === 0">
+											<div class="text-center fs-sm">
+												<img style="width: 100px" 
+													src="~/assets/images/media/empty_data.png" />
+											</div>
+										</template>
+										<template x-for="item in _listGroup" :key="item.id">
+											<div class="col-4">
+												<div class="form-check">
+													<input class="form-check-input select-group-item" 
+															type="checkbox" :value="item.id" x-model="_updinData.groupId">
+													<label class="form-check-label" x-text="item.groupName"></label>
+												</div>
+											</div>
+										</template>
+									</div>
+								</div>
+							</div>
+						</div>
 
-                        <div :class="_updinData.autoExam ? 'mb-4' : 'mb-4 d-none' ">
-                            <label class="form-label">Chương</label>
-                            <select class="form-control"
-                                    id="choices-multiple-remove-button chapter"  name="chapter"
-                                    x-ref="selectElement"
-                                    multiple>
-                            </select>
-                        </div>
+						<div :class="_updinData.autoExam ? 'mb-4' : 'mb-4 d-none' ">
+							<label class="form-label">Chương</label>
+							<select class="form-control"
+									id="choices-multiple-remove-button chapter"  name="chapter"
+									x-ref="selectElement"
+									multiple>
+							</select>
+						</div>
 
-                        <div class="mb-4">
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="form-label" for="coban">Số câu dễ</label>
-                                    <input type="number" class="form-control" name="eqCount" id="eqCount" x-model="_updinData.eqCount">
-                                </div>                                                            
-                                <div class="col-4">                                               
-                                    <label class="form-label" for="trungbinh">Số câu trung bình</label>
-                                    <input type="number" class="form-control" name="mqCount" id="mqCount" x-model="_updinData.mqCount">
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label" for="kho">Số câu khó</label>
-                                    <input type="number" class="form-control" name="hqCount" id="hqCount" x-model="_updinData.hqCount">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <button type="button" class="btn btn-hero btn-primary"
-                                    x-on:click="SaveExam()">
-                                <i class="fa fa-fw fa-plus me-1"></i> Tạo đề
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+						<div class="mb-4">
+							<div class="row">
+								<div class="col-4">
+									<label class="form-label" for="coban">Số câu dễ</label>
+									<input type="number" class="form-control" name="eqCount" id="eqCount" x-model="_updinData.eqCount">
+								</div>
+								<div class="col-4">
+									<label class="form-label" for="trungbinh">Số câu trung bình</label>
+									<input type="number" class="form-control" name="mqCount" id="mqCount" x-model="_updinData.mqCount">
+								</div>
+								<div class="col-4">
+									<label class="form-label" for="kho">Số câu khó</label>
+									<input type="number" class="form-control" name="hqCount" id="hqCount" x-model="_updinData.hqCount">
+								</div>
+							</div>
+						</div>
+						<div class="mb-4">
+							<button type="button" class="btn btn-hero btn-primary"
+									x-on:click="SaveExam()">
+								<i class="fa fa-fw fa-plus me-1"></i> Tạo đề
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header align-items-center">
-                    <h4 class="card-title mb-0 flex-grow-1">CẤU HÌNH</h4>
-                </div>                                                                          
-                <div id="side-content" class="card-body">
-                    <div class="form-check form-switch mb-2">
-                        <input class="form-check-input" type="checkbox"id="autoExam" x-model="_updinData.autoExam" checked>
-                        <label class="form-check-label" for="tudongsoande">Tự động tạo câu hỏi</label>
-                    </div>
-                    <div class="form-check form-switch mb-2 d-none">
-                        <input class="form-check-input" type="checkbox" x-model="_updinData.showAnswer">
-                        <label class="form-check-label" for="xemda">Xem đáp án khi thi xong</label>
-                    </div>
-                    <div class="form-check form-switch mb-2">
-                        <input class="form-check-input" type="checkbox" id="xembailam" name="xembailam">
-                        <label class="form-check-label" for="xembailam">Xem bài làm khi thi xong</label>
-                    </div>
-                    <div class="form-check form-switch mb-2">
-                        <input class="form-check-input" type="checkbox" x-model="_updinData.mixQuestion">
-                        <label class="form-check-label" for="daocauhoi">Trộn câu hỏi</label>
-                    </div>
-                    <div class="form-check form-switch mb-2">
-                        <input class="form-check-input" type="checkbox" x-model="_updinData.mixAnswer">
-                        <label class="form-check-label" for="daodapan">Trộn đáp án</label>
-                    </div>
-                    <div class="form-check form-switch mb-2">
-                        <input class="form-check-input" type="checkbox" x-model="_updinData.submitWhenExit">
-                        <label class="form-check-label" for="tudongnop">Tự động nộp bài khi chuyển tab</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		<div class="col-lg-4">
+			<div class="card">
+				<div class="card-header align-items-center">
+					<h4 class="card-title mb-0 flex-grow-1">CẤU HÌNH</h4>
+				</div>
+				<div id="side-content" class="card-body">
+					@* fix tạo câu hỏi tự động -> test fix sau *@
+					<div class="form-check form-switch mb-2" hidden>
+						<input class="form-check-input" type="checkbox"id="autoExam" value="flase" x-model="_updinData.autoExam" checked>
+						<label class="form-check-label" for="tudongsoande">Tự động tạo câu hỏi</label>
+					</div>
+					<div class="form-check form-switch mb-2 d-none">
+						<input class="form-check-input" type="checkbox" x-model="_updinData.showAnswer">
+						<label class="form-check-label" for="xemda">Xem đáp án khi thi xong</label>
+					</div>
+					<div class="form-check form-switch mb-2">
+						<input class="form-check-input" type="checkbox" id="xembailam" name="xembailam">
+						<label class="form-check-label" for="xembailam">Xem bài làm khi thi xong</label>
+					</div>
+					<div class="form-check form-switch mb-2">
+						<input class="form-check-input" type="checkbox" x-model="_updinData.mixQuestion">
+						<label class="form-check-label" for="daocauhoi">Trộn câu hỏi</label>
+					</div>
+					<div class="form-check form-switch mb-2">
+						<input class="form-check-input" type="checkbox" x-model="_updinData.mixAnswer">
+						<label class="form-check-label" for="daodapan">Trộn đáp án</label>
+					</div>
+					<div class="form-check form-switch mb-2">
+						<input class="form-check-input" type="checkbox" x-model="_updinData.submitWhenExit">
+						<label class="form-check-label" for="tudongnop">Tự động nộp bài khi chuyển tab</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </div>

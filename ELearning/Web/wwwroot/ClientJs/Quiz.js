@@ -329,36 +329,85 @@ function closeChat() {
 	document.getElementById('chatWindow').classList.remove('active');
 }
 
-async function sendMessage() {
+//async function sendMessage() {
+//	const input = document.getElementById('chatInput');
+//	const message = input.value.trim();
+
+//	if (!message) return;
+
+//	addMessage(message, 'user');
+//	input.value = '';
+//	showTypingIndicator();
+
+//	try {
+//		const response = await fetch('/Quiz/chat', {
+//			method: 'POST',
+//			headers: {
+//				'Content-Type': 'application/json',
+//				'X-Result-ID': resultId
+//			},
+//			body: JSON.stringify({ message })
+//		});
+//		if (!response.ok) throw new Error('Invalid response');
+//		const data = await response.json();
+//		hideTypingIndicator();
+//		addMessage(data.response, 'bot');
+//	} catch (error) {
+//		hideTypingIndicator();
+//		showNotification('Lỗi khi gửi tin nhắn!', 'warning');
+//		console.error(error);
+//	}
+//}
+
+//function addMessage(text, type) {
+//	const messagesContainer = document.getElementById('chatMessages');
+//	const messageDiv = document.createElement('div');
+//	messageDiv.className = `message ${type}`;
+
+//	if (type === 'user') {
+//		messageDiv.innerHTML = `
+//			<div class="message-content">${text}</div>
+//			<div class="message-avatar">
+//				<i class="fas fa-user"></i>
+//			</div>
+//		`;
+//	} else {
+//		messageDiv.innerHTML = `
+//			<div class="message-avatar">
+//				<i class="fas fa-robot"></i>
+//			</div>
+//			<div class="message-content">${text}</div>
+//		`;
+//	}
+
+//	messagesContainer.appendChild(messageDiv);
+//	messagesContainer.scrollTop = messagesContainer.scrollHeight;
+//}
+
+//sendMessage test
+function sendMessage() {
 	const input = document.getElementById('chatInput');
 	const message = input.value.trim();
 
 	if (!message) return;
 
+	// Add user message
 	addMessage(message, 'user');
 	input.value = '';
+
+	// Show typing indicator
 	showTypingIndicator();
 
-	try {
-		const response = await fetch('/Quiz/chat', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-Result-ID': resultId
-			},
-			body: JSON.stringify({ message })
-		});
-		if (!response.ok) throw new Error('Invalid response');
-		const data = await response.json();
+	// Simulate bot response
+	setTimeout(() => {
 		hideTypingIndicator();
-		addMessage(data.response, 'bot');
-	} catch (error) {
-		hideTypingIndicator();
-		showNotification('Lỗi khi gửi tin nhắn!', 'warning');
-		console.error(error);
-	}
-}
 
+		// Generate bot response based on user input
+		const botResponse = generateBotResponse(message);
+		addMessage(botResponse, 'bot');
+	}, 1500);
+}
+// addMessage function to display messages in chat test
 function addMessage(text, type) {
 	const messagesContainer = document.getElementById('chatMessages');
 	const messageDiv = document.createElement('div');
@@ -366,18 +415,18 @@ function addMessage(text, type) {
 
 	if (type === 'user') {
 		messageDiv.innerHTML = `
-			<div class="message-content">${text}</div>
-			<div class="message-avatar">
-				<i class="fas fa-user"></i>
-			</div>
-		`;
+                    <div class="message-content">${text}</div>
+                    <div class="message-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                `;
 	} else {
 		messageDiv.innerHTML = `
-			<div class="message-avatar">
-				<i class="fas fa-robot"></i>
-			</div>
-			<div class="message-content">${text}</div>
-		`;
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">${text}</div>
+                `;
 	}
 
 	messagesContainer.appendChild(messageDiv);
@@ -409,6 +458,26 @@ function hideTypingIndicator() {
 	if (typingIndicator) {
 		typingIndicator.remove();
 	}
+}
+function generateBotResponse(userMessage) {
+	const responses = {
+		'sốt': 'Sốt là phản ứng tự nhiên của cơ thể khi chống lại nhiễm trùng. Bạn nên theo dõi nhiệt độ và uống nhiều nước.',
+		'đau đầu': 'Đau đầu có thể do nhiều nguyên nhân. Bạn nên nghỉ ngơi, uống nước và tránh stress.',
+		'ho': 'Ho có thể là triệu chứng của nhiễm trùng đường hô hấp. Bạn nên uống nhiều nước ấm và nghỉ ngơi.',
+		'chào': 'Xin chào! Tôi có thể giúp bạn tư vấn về các vấn đề sức khỏe cơ bản.',
+		'cảm ơn': 'Không có gì! Tôi luôn sẵn sàng hỗ trợ bạn.',
+		'tạm biệt': 'Tạm biệt! Chúc bạn sức khỏe tốt!'
+	};
+
+	const lowerMessage = userMessage.toLowerCase();
+
+	for (const [key, response] of Object.entries(responses)) {
+		if (lowerMessage.includes(key)) {
+			return response;
+		}
+	}
+
+	return 'Cảm ơn bạn đã hỏi! Tôi sẽ cố gắng tìm hiểu thêm về vấn đề này. Bạn có thể hỏi về các triệu chứng như sốt, đau đầu, ho, hoặc các vấn đề sức khỏe khác.';
 }
 
 function handleKeyPress(event) {

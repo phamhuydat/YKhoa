@@ -21,12 +21,10 @@ namespace Web.Controllers
 			_db = db;
 		}
 
-
 		public IActionResult Index()
 		{
 			return View();
 		}
-
 
 		[HttpPost]
 		public async Task<IActionResult> StartQuiz(int idQuiz)
@@ -153,7 +151,6 @@ namespace Web.Controllers
 				var quizResult = await _repo.GetOneAsync<Result>(x => x.Id == resultId);
 				if (quizResult == null)
 					return Unauthorized(new { error = "Invalid result ID" });
-
 				var answers = await _repo.GetAll<ResultDetails>()
 					.Where(d => d.ResultId == resultId)
 					.Join(
@@ -179,7 +176,7 @@ namespace Web.Controllers
 			}
 		}
 
-		// Submit answer
+		// Submit check  answer
 		[HttpPost]
 		public async Task<IActionResult> SubmitAnswer(int orderQuestion, [FromBody] AnswerRequest request, [FromHeader(Name = "X-Result-ID")] int resultId)
 		{
@@ -204,23 +201,14 @@ namespace Web.Controllers
 				if (request.SelectedOption <= 0)
 					return BadRequest(new { error = "Invalid option selected" });
 
-
-				//var isCorrect = question.answers
-				//	.Where(a => a.Status)
-				//	.Select(a => a.Id)
-				//	.Contains(request.SelectedOption);
-
 				var isCorrect = question.Any(q => q.answers.Any(a => a.Id == request.SelectedOption && a.Status));
 
 
-				// Check if answer already exists
 				var existingAnswer = await _repo.GetOneAsync<ResultDetails>(d => d.ResultId == resultId && d.QuestionId == questionNumber);
 
 				if (existingAnswer != null)
 				{
-					// Update existing answer
 					existingAnswer.AnswerId = request.SelectedOption;
-					//existingAnswer.IsCorrect = isCorrect;
 				}
 				else
 				{
@@ -229,9 +217,10 @@ namespace Web.Controllers
 						ResultId = resultId,
 						QuestionId = questionNumber,
 						AnswerId = request.SelectedOption,
-						//IsCorrect = isCorrect
 					};
-					// Add new answer							      
+
+					// save result details test
+					// Add new answer
 					//await _repo.AddAsync(newResult);	  
 				}
 
@@ -247,12 +236,6 @@ namespace Web.Controllers
 				quizResult.TestScores = 0;
 
 				//await _repo.UpdateAsync(quizResult);
-
-				//var feedback = question.answers
-				//	.Where(a => a.Id == request.SelectedOption)
-				//	.Select(a => a.Feedback)
-				//	.FirstOrDefault();
-
 				var feedback = question.SelectMany(q => q.answers)
 					.Where(a => a.Id == request.SelectedOption)
 					.Select(a => a.Feedback)
@@ -382,7 +365,6 @@ namespace Web.Controllers
 				data.TotalWorkTime = 0;
 				data.TotalCorrectAnswer = 0;
 			}
-
 			return View(data);
 		}
 
@@ -406,7 +388,6 @@ namespace Web.Controllers
 							Id = a.Id,
 							AnswerContent = a.AnswerContent,
 						}).ToList()
-
 					}).ToListAsync();
 		}
 
@@ -430,7 +411,6 @@ namespace Web.Controllers
 		public async Task<IActionResult> SubmitAnswers([FromBody] SubmitAnswerRequest request)
 		{
 			var selectIds = request.SelectAnswer;
-
 
 			var question = await _repo.GetOneAsync<Question>(q => q.Id == request.QuestionId);
 			if (question == null)
